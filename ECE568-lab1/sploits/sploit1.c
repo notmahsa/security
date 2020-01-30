@@ -9,7 +9,7 @@
 #define SHELL_SIZE 45
 #define BUF_TO_RET 120
 #define BUF_SIZE 125
-#define BUF_ADDR 0x2021feb0
+#define BUF_ADDR 0x2021fe10
 
 int
 main ( int argc, char * argv[] )
