@@ -11,8 +11,6 @@
 #define BUF_SIZE 125
 #define BUF_ADDR 0x2021feb0
 
-#define SHELL_SIZE strlen(shellcode)
-
 int
 main ( int argc, char * argv[] )
 {
