@@ -29,7 +29,7 @@ main ( int argc, char * argv[] )
 	attack_buffer[BUF_TO_RET + 4] = '\0';
 
 	printf("attack_buffer %s\n",attack_buffer);
-	printf("%x%x%x%x\n",attack_buffer[BUF_TO_RET],
+	printf("%x\t%x\t%x\t%x\n",attack_buffer[BUF_TO_RET],
 						attack_buffer[BUF_TO_RET + 1],
 						attack_buffer[BUF_TO_RET + 2],
 						attack_buffer[BUF_TO_RET + 3]);
