@@ -16,6 +16,10 @@
 #define FMT_OUTPUT "ECE568-SERVER: %s %s\n"
 #define FMT_INCOMPLETE_CLOSE "ECE568-SERVER: Incomplete shutdown\n"
 
+#define SERVER_KEY_FILE "bob.pem"
+#define SERVER_PASSWORD "password"
+#define CA_LIST "568ca.pem"
+
 int main(int argc, char **argv)
 {
   int s, sock, port=PORT;
