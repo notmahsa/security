@@ -9,6 +9,7 @@
 #include <arpa/inet.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <assert.h>
 
 #define HOST "localhost"
 #define PORT 8765
@@ -25,6 +26,7 @@
 #define CN_SERVER "Bob's Server"
 #define EMAIL "ece568bob@ecf.utoronto.ca"
 #define CLIENT_KEY_FILE "alice.pem"
+#define SERVER_KEY_FILE "bob.pem"
 #define CLIENT_PASSWORD "password"
 #define CA_LIST "568ca.pem"
 
@@ -36,6 +38,7 @@ SSL_CTX* init_ctx(char* keyfile, char * password);
 void initialize_ssl();
 void destroy_ssl();
 void shutdown_ssl(SSL *ssl);
+void check_server_certs(SSL* ssl);
 
 int main(int argc, char **argv)
 {
@@ -67,13 +70,12 @@ int main(int argc, char **argv)
   
   initialize_ssl();
   ctx = init_ctx(CLIENT_KEY_FILE, CLIENT_PASSWORD);
-  
   sock = open_connection(host, port);
-  
   ssl = SSL_new(ctx);
   SSL_set_fd(ssl, sock);
-  if ( SSL_connect(ssl) < 0 )
-        ERR_print_errors_fp(stderr);
+  if ( SSL_connect(ssl) < 0 ) ERR_print_errors_fp(stderr);
+  
+  check_server_certs(ssl);
   
   send(sock, secret, strlen(secret),0);
   len = recv(sock, &buf, 255, 0);
@@ -130,24 +132,87 @@ SSL_CTX* init_ctx(char * keyfile, char * password)
     if ( ctx == NULL )
     {
 		ERR_print_errors_fp(stderr);
-        fprintf(stderr,"Couldn't init context\n");
+        fprintf(stderr,"ECE568-CLIENT: SSL connect error\n");
         exit(0);
     }
+	SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, NULL);
+	SSL_CTX_set_verify_depth(ctx, 1);
+	const long flags = SSL_OP_NO_SSLv2 | SSL_OP_NO_COMPRESSION;
+	SSL_CTX_set_options(ctx, flags);
+	SSL_CTX_set_cipher_list(ctx, "SHA1");
+	SSL_CTX_load_verify_locations(ctx, CA_LIST, NULL);
 	
 	/* this part is taken from course notes from University of Old Dominion */
 	SSL_CTX_use_certificate_file(ctx, keyfile, SSL_FILETYPE_PEM);
 	SSL_CTX_set_default_passwd_cb (ctx, pem_passwd_cb);
 	SSL_CTX_use_PrivateKey_file(ctx, keyfile, SSL_FILETYPE_PEM);
-	SSL_CTX_load_verify_locations(ctx, CA_LIST, 0);
+	
     return ctx;
 }
+
+void check_server_certs(SSL* ssl)
+{
+	/* taken from https://aticleworld.com/ssl-server-client-using-openssl-in-c/ */
+    X509 *cert, *file_cert;
+    char *line;
+	BIO *certbio = NULL;
+	X509_STORE *store = NULL;
+	X509_STORE_CTX *vrfy_ctx = NULL;
+	char common_name[256];
+	char email[256];
+	char issuer[256];
+	
+    cert = SSL_get_peer_certificate(ssl); /* get the server's certificate */
+	assert(X509_V_OK == SSL_get_verify_result(ssl));
+	
+    if (!cert){
+		printf("Server has no cert\n");
+		exit(0);
+	}
+	
+	X509_NAME_get_text_by_NID (X509_get_subject_name(cert), NID_commonName, common_name, 256);
+	X509_NAME_get_text_by_NID (X509_get_subject_name(cert), NID_pkcs9_emailAddress, email, 256);  
+	X509_NAME_get_text_by_NID (X509_get_issuer_name(cert), NID_commonName, issuer, 256);
+	
+	certbio = BIO_new(BIO_s_file());
+	store=X509_STORE_new();
+	vrfy_ctx = X509_STORE_CTX_new();
+	
+	BIO_read_filename(certbio, SERVER_KEY_FILE);
+	file_cert = PEM_read_bio_X509(certbio, NULL, 0, NULL);
+	
+	X509_STORE_load_locations(store, CA_LIST, NULL);
+	X509_STORE_CTX_init(vrfy_ctx, store, file_cert, NULL);
+	
+	if (X509_verify_cert(vrfy_ctx) != 1){
+		printf("Server certificates:\n");
+		line = X509_NAME_oneline(X509_get_subject_name(cert), 0, 0);
+		printf("Subject: %s\n", line);
+		free(line);       /* free the malloc'ed string */
+		line = X509_NAME_oneline(X509_get_issuer_name(cert), 0, 0);
+		printf("Issuer: %s\n", line);
+		free(line);       /* free the malloc'ed string */
+	}
+	X509_STORE_CTX_free(vrfy_ctx);
+	X509_STORE_free(store);
+	X509_free(file_cert);
+	BIO_free_all(certbio);
+	X509_free(cert);     /* free the malloc'ed certificate copy */
+    
+
+	ERR_print_errors_fp(stderr);
+    fprintf(stderr,"ECE568-CLIENT: SSL connect error\n");
+	exit(0);
+}
+
 
 void initialize_ssl()
 {
     SSL_load_error_strings();
     SSL_library_init();
     OpenSSL_add_all_algorithms();
-	OPENSSL_config(NULL);
+	ERR_load_BIO_strings();
+	ERR_load_crypto_strings();
 }
 
 void destroy_ssl()
