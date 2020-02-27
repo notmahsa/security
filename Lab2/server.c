@@ -152,7 +152,8 @@ SSL_CTX *init_ctx(char* keyfile)
 {
     SSL_CTX *ctx;
 	ctx = SSL_CTX_new(TLSv1_server_method());
-	ctx = ctx ? ctx : SSL_CTX_new(SSLv3_server_method()); 
+	ctx = ctx ? ctx : SSL_CTX_new(SSLv3_server_method());
+	ctx = ctx ? ctx : SSL_CTX_new(SSLv2_server_method()); 
 
     if (!ctx) {
 		printf(FMT_ACCEPT_ERR);
@@ -161,8 +162,7 @@ SSL_CTX *init_ctx(char* keyfile)
     
 	SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, NULL);
 	SSL_CTX_set_verify_depth(ctx, 1);
-	SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_COMPRESSION);
-	SSL_CTX_set_cipher_list(ctx, "SHA1");
+	SSL_CTX_set_options(ctx, SSL_OP_NO_COMPRESSION);
 	SSL_CTX_load_verify_locations(ctx, CA_LIST, NULL);
 	SSL_CTX_use_PrivateKey_file(ctx, keyfile, SSL_FILETYPE_PEM);
 	SSL_CTX_use_certificate_file(ctx, keyfile, SSL_FILETYPE_PEM);
