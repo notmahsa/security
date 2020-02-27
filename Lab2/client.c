@@ -26,7 +26,6 @@
 
 #define SERVER_COMMON_NAME "Bob's Server"
 #define SERVER_EMAIL "ece568bob@ecf.utoronto.ca"
-
 #define CLIENT_KEY_FILE "alice.pem"
 #define CLIENT_PASSWORD "password"
 #define CA_LIST "568ca.pem"
@@ -37,7 +36,7 @@ void initialize_ssl();
 void destroy_ssl();
 void shutdown_ssl(SSL *ssl);
 bool is_server_cert_valid(SSL* ssl);
-void send_message(int sock, const char *secret);
+void send_message(SSL* ssl, const char *secret);
 
 int main(int argc, char **argv)
 {
@@ -49,19 +48,19 @@ int main(int argc, char **argv)
 
 	/*Parse command line arguments*/
 	switch(argc){
-	case 1:
-	  break;
-	case 3:
-	  host = argv[1];
-	  port = atoi(argv[2]);
-	  if (port < 1 || port > 65535){
-		fprintf(stderr,"invalid port number");
-		exit(0);
-	  }
-	  break;
-	default:
-	  printf("Usage: %s server port\n", argv[0]);
-	  exit(0);
+		case 1:
+		  break;
+		case 3:
+		  host = argv[1];
+		  port = atoi(argv[2]);
+		  if (port < 1 || port > 65535){
+			fprintf(stderr,"invalid port number");
+			exit(0);
+		  }
+		  break;
+		default:
+		  printf("Usage: %s server port\n", argv[0]);
+		  exit(0);
 	}
 
 	initialize_ssl();
@@ -69,9 +68,13 @@ int main(int argc, char **argv)
 	sock = open_connection(host, port);
 	ssl = SSL_new(ctx);
 	SSL_set_fd(ssl, sock);
-	if (SSL_connect(ssl) < 0) printf(FMT_CONNECT_ERR);
-
-	!is_server_cert_valid(ssl)?:send_message(sock, secret);
+	if (SSL_connect(ssl) < 1){
+		printf(FMT_CONNECT_ERR);
+		ERR_print_errors_fp(stdout);
+	}
+	else {
+		!is_server_cert_valid(ssl)?:send_message(ssl, secret);
+	}
 	
 	close(sock);
 	destroy_ssl();
@@ -79,12 +82,17 @@ int main(int argc, char **argv)
 	return 1;
 }
 
-void send_message(int sock, const char *secret){
+void send_message(SSL* ssl, const char *secret){
 	char buf[256];
 	int len;
-	
-	send(sock, secret, strlen(secret),0);
-	len = recv(sock, &buf, 255, 0);
+
+	int r = SSL_write(ssl, secret, strlen(secret));
+	if (SSL_get_error(ssl, r) ==  SSL_ERROR_SYSCALL) {
+		printf(FMT_INCORRECT_CLOSE);
+		return;
+	}
+ 
+	len = SSL_read(ssl, buf, strlen(buf));
 	buf[len]='\0';
 	
 	/* this is how you output something for the marker to pick up */
@@ -134,6 +142,7 @@ SSL_CTX* init_ctx(char * keyfile)
 
     if (ctx == NULL){
 		printf(FMT_CONNECT_ERR);
+		ERR_print_errors_fp(stderr);
         exit(0);
     }
 	
