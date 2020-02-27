@@ -157,6 +157,7 @@ SSL_CTX *init_ctx(char* keyfile)
 
 	if (!ctx) {
 		printf(FMT_ACCEPT_ERR);
+		ERR_print_errors_fp(stdout);
 		exit(0);
 	}
 
