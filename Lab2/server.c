@@ -9,6 +9,7 @@
 #include <arpa/inet.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <stdbool.h>
 
 #define PORT 8765
 
@@ -28,7 +29,7 @@ void destroy_ssl();
 void shutdown_ssl(SSL *ssl);
 SSL_CTX *init_ctx(char* keyfile);
 void shutdown_ssl(SSL *ssl);
-void print_client_info(SSL* ssl);
+bool is_client_cert_valid(SSL* ssl);
 
 int main(int argc, char **argv)
 {
@@ -74,7 +75,7 @@ int main(int argc, char **argv)
 			/*Child code*/
 			ssl = SSL_new(ctx);
 			SSL_set_fd(ssl, s);
-			if (SSL_accept(ssl) < 1){
+			if (SSL_accept(ssl) < 1 || !is_client_cert_valid(ssl)){
 				printf(FMT_ACCEPT_ERR);
 				ERR_print_errors_fp(stderr);
 				close(s);
@@ -91,7 +92,6 @@ int main(int argc, char **argv)
 				break;
 			}
 			buf[len] = '\0';
-			print_client_info(ssl);
 			printf(FMT_OUTPUT, buf, answer);
 			SSL_write(ssl, answer, strlen(answer));
 			destroy_ssl();
@@ -107,7 +107,7 @@ int main(int argc, char **argv)
 	return 1;
 }
 
-void print_client_info(SSL* ssl)
+bool print_client_info(SSL* ssl)
 {
 	X509 *cert;
 	char common_name[256];
@@ -116,13 +116,14 @@ void print_client_info(SSL* ssl)
 	cert = SSL_get_peer_certificate(ssl); /* get the server's certificate */
 	if (cert == NULL || X509_V_OK != SSL_get_verify_result(ssl)){
 		printf(FMT_ACCEPT_ERR);
-		return;
+		return false;
 	}
 
 	X509_NAME_get_text_by_NID(X509_get_subject_name(cert), NID_commonName, common_name, 256);
 	X509_NAME_get_text_by_NID(X509_get_subject_name(cert), NID_pkcs9_emailAddress, email, 256);
 
 	printf(FMT_CLIENT_INFO, common_name, email);
+	return true;
 }
 
 int create_socket(int port){
