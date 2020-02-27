@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 			/*Child code*/
 			ssl = SSL_new(ctx);
 			SSL_set_fd(ssl, s);
-			cert = SSL_get_peer_certificate(ssl); /* get the client's certificate */
+			X509 *cert = SSL_get_peer_certificate(ssl); /* get the client's certificate */
 			if (SSL_accept(ssl) < 1 || cert == NULL || X509_V_OK != SSL_get_verify_result(ssl)){
 				printf(FMT_ACCEPT_ERR);
 				ERR_print_errors_fp(stderr);
