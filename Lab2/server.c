@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 			len = SSL_read(ssl, buf, sizeof(buf)/sizeof(char));
 			buf[len] = '\0';
 
-			if (SSL_get_error(ssl,len) == SSL_ERROR_SYSCALL){
+			if (len < 1){
 				printf(FMT_INCOMPLETE_CLOSE);
 				break;
 			}
