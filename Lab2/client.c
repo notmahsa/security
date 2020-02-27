@@ -29,7 +29,7 @@
 #define CLIENT_KEY_FILE "alice.pem"
 #define CLIENT_PASSWORD "password"
 #define CA_LIST "568ca.pem"
-  
+
 int open_connection(char* host, int port);
 SSL_CTX* init_ctx(char* keyfile);
 void initialize_ssl();
@@ -49,18 +49,18 @@ int main(int argc, char **argv)
 	/*Parse command line arguments*/
 	switch(argc){
 		case 1:
-		  break;
+			break;
 		case 3:
-		  host = argv[1];
-		  port = atoi(argv[2]);
-		  if (port < 1 || port > 65535){
-			fprintf(stderr,"invalid port number");
-			exit(0);
-		  }
-		  break;
+			host = argv[1];
+			port = atoi(argv[2]);
+			if (port < 1 || port > 65535){
+				fprintf(stderr,"invalid port number");
+				exit(0);
+			}
+			break;
 		default:
-		  printf("Usage: %s server port\n", argv[0]);
-		  exit(0);
+			printf("Usage: %s server port\n", argv[0]);
+			exit(0);
 	}
 
 	initialize_ssl();
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 	else {
 		!is_server_cert_valid(ssl)?:send_message(ssl, secret);
 	}
-	
+
 	close(sock);
 	destroy_ssl();
 	shutdown_ssl(ssl);
@@ -91,40 +91,40 @@ void send_message(SSL* ssl, const char *secret){
 		printf(FMT_INCORRECT_CLOSE);
 		return;
 	}
- 
+
 	len = SSL_read(ssl, buf, sizeof(buf)/sizeof(char));
 	buf[len]='\0';
-	
+
 	/* this is how you output something for the marker to pick up */
 	printf(FMT_OUTPUT, secret, buf);
 }
 
 int open_connection(char* host, int port){
-  /*get ip address of the host*/
-  int sock;
-  struct sockaddr_in addr;
-  struct hostent *host_entry;
-  
-  if ((host_entry = gethostbyname(host)) == NULL){
-    printf(FMT_CONNECT_ERR);
-    exit(0);
-  }
+	/*get ip address of the host*/
+	int sock;
+	struct sockaddr_in addr;
+	struct hostent *host_entry;
 
-  memset(&addr,0,sizeof(addr));
-  addr.sin_addr = *(struct in_addr *) host_entry->h_addr_list[0];
-  addr.sin_family = AF_INET;
-  addr.sin_port = htons(port);
-  
-  printf("Connecting to %s(%s):%d\n", host, inet_ntoa(addr.sin_addr),port);
-  
-  /*open socket*/
-  if((sock=socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
-    perror("socket");
+	if ((host_entry = gethostbyname(host)) == NULL){
+		printf(FMT_CONNECT_ERR);
+		exit(0);
+	}
 
-  if(connect(sock,(struct sockaddr *)&addr, sizeof(addr)) < 0)
-    perror("connect");
+	memset(&addr,0,sizeof(addr));
+	addr.sin_addr = *(struct in_addr *) host_entry->h_addr_list[0];
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
 
-  return sock;
+	printf("Connecting to %s(%s):%d\n", host, inet_ntoa(addr.sin_addr),port);
+
+	/*open socket*/
+	if((sock=socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
+		perror("socket");
+
+	if(connect(sock,(struct sockaddr *)&addr, sizeof(addr)) < 0)
+		perror("connect");
+
+	return sock;
 }
 
 int pem_passwd_cb(char *buf, int size, int rwflag, void *password) 
@@ -136,16 +136,16 @@ int pem_passwd_cb(char *buf, int size, int rwflag, void *password)
 
 SSL_CTX* init_ctx(char * keyfile)
 {
-    SSL_CTX *ctx;
+	SSL_CTX *ctx;
 	ctx = SSL_CTX_new(TLSv1_method());
 	ctx = ctx ? ctx : SSL_CTX_new(SSLv3_method()); 
 
-    if (ctx == NULL){
+	if (ctx == NULL){
 		printf(FMT_CONNECT_ERR);
 		ERR_print_errors_fp(stderr);
-        exit(0);
-    }
-	
+		exit(0);
+	}
+
 	SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, NULL);
 	SSL_CTX_set_verify_depth(ctx, 1);
 	SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_COMPRESSION);
@@ -155,27 +155,27 @@ SSL_CTX* init_ctx(char * keyfile)
 	SSL_CTX_use_certificate_file(ctx, keyfile, SSL_FILETYPE_PEM);
 	SSL_CTX_set_default_passwd_cb (ctx, pem_passwd_cb);
 
-    return ctx;
+	return ctx;
 }
 
 bool is_server_cert_valid(SSL* ssl)
 {
 	/* taken hints from https://aticleworld.com/ssl-server-client-using-openssl-in-c/ */
-    X509 *cert;
+	X509 *cert;
 	char common_name[256];
 	char email[256];
 	char issuer[256];
-	
-    cert = SSL_get_peer_certificate(ssl); /* get the server's certificate */
-    if (cert == NULL || X509_V_OK != SSL_get_verify_result(ssl)){
+
+	cert = SSL_get_peer_certificate(ssl); /* get the server's certificate */
+	if (cert == NULL || X509_V_OK != SSL_get_verify_result(ssl)){
 		printf(FMT_NO_VERIFY);
 		return false;
 	}
-	
+
 	X509_NAME_get_text_by_NID(X509_get_subject_name(cert), NID_commonName, common_name, 256);
 	X509_NAME_get_text_by_NID(X509_get_subject_name(cert), NID_pkcs9_emailAddress, email, 256);  
 	X509_NAME_get_text_by_NID(X509_get_issuer_name(cert), NID_commonName, issuer, 256);
-	
+
 	printf("%s/n", email);
 	if (strcasecmp(common_name,SERVER_COMMON_NAME)){
 		printf(FMT_CN_MISMATCH);
@@ -192,21 +192,21 @@ bool is_server_cert_valid(SSL* ssl)
 
 void initialize_ssl()
 {
-    SSL_load_error_strings();
-    SSL_library_init();
-    OpenSSL_add_all_algorithms();
+	SSL_load_error_strings();
+	SSL_library_init();
+	OpenSSL_add_all_algorithms();
 	ERR_load_BIO_strings();
 	ERR_load_crypto_strings();
 }
 
 void destroy_ssl()
 {
-    ERR_free_strings();
-    EVP_cleanup();
+	ERR_free_strings();
+	EVP_cleanup();
 }
 
 void shutdown_ssl(SSL *ssl)
 {
-    SSL_shutdown(ssl);
-    SSL_free(ssl);
+	SSL_shutdown(ssl);
+	SSL_free(ssl);
 }

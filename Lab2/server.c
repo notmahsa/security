@@ -39,18 +39,18 @@ int main(int argc, char **argv)
 	/*Parse command line arguments*/
 
 	switch(argc){
-	case 1:
-	  break;
-	case 2:
-	  port=atoi(argv[1]);
-	  if (port < 1 || port > 65535){
-	fprintf(stderr,"invalid port number");
-	exit(0);
-	  }
-	  break;
-	default:
-	  printf("Usage: %s port\n", argv[0]);
-	  exit(0);
+		case 1:
+			break;
+		case 2:
+			port=atoi(argv[1]);
+			if (port < 1 || port > 65535){
+				fprintf(stderr,"invalid port number");
+				exit(0);
+			}
+			break;
+		default:
+			printf("Usage: %s port\n", argv[0]);
+			exit(0);
 	}
 
 	initialize_ssl();
@@ -59,12 +59,12 @@ int main(int argc, char **argv)
 
 	while(1){
 		if ((s=accept(sock, NULL, 0)) < 0){
-		  perror("accept");
-		  close(sock);
-		  close(s);
-		  exit (0);
+			perror("accept");
+			close(sock);
+			close(s);
+			exit (0);
 		}
-		
+
 		/*fork a child to handle the connection*/
 		if ((pid=fork())){
 			close(s);
@@ -79,19 +79,19 @@ int main(int argc, char **argv)
 				close(s);
 				exit(0);
 			}
-			
+
 			int len;
 			char buf[256];
 			char *answer = "42";
-			
+
 			len = SSL_read(ssl, buf, sizeof(buf)/sizeof(char));
 			buf[len] = '\0';
-			
+
 			if (SSL_get_error(ssl,len) == SSL_ERROR_SYSCALL){
 				printf(FMT_INCOMPLETE_CLOSE);
 				break;
 			}
-			
+
 			printf(FMT_OUTPUT, buf, answer);
 			SSL_write(ssl, answer, strlen(answer));
 			destroy_ssl();
@@ -111,7 +111,7 @@ int create_socket(int port){
 	int sock;
 	int val = 1;
 	struct sockaddr_in sin;
-	
+
 	if ((sock=socket(AF_INET,SOCK_STREAM,0)) < 0){
 		perror("socket");
 		close(sock);
@@ -136,7 +136,7 @@ int create_socket(int port){
 		close(sock);
 		exit (0);
 	}
-	
+
 	return sock;
 }
 
@@ -150,16 +150,16 @@ int pem_passwd_cb(char *buf, int size, int rwflag, void *password)
 
 SSL_CTX *init_ctx(char* keyfile)
 {
-    SSL_CTX *ctx;
+	SSL_CTX *ctx;
 	ctx = SSL_CTX_new(TLSv1_server_method());
 	ctx = ctx ? ctx : SSL_CTX_new(SSLv3_server_method());
 	ctx = ctx ? ctx : SSL_CTX_new(SSLv2_server_method()); 
 
-    if (!ctx) {
+	if (!ctx) {
 		printf(FMT_ACCEPT_ERR);
 		exit(0);
-    }
-    
+	}
+
 	SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, NULL);
 	SSL_CTX_set_verify_depth(ctx, 1);
 	SSL_CTX_set_options(ctx, SSL_OP_NO_COMPRESSION);
@@ -167,27 +167,28 @@ SSL_CTX *init_ctx(char* keyfile)
 	SSL_CTX_use_PrivateKey_file(ctx, keyfile, SSL_FILETYPE_PEM);
 	SSL_CTX_use_certificate_file(ctx, keyfile, SSL_FILETYPE_PEM);
 	SSL_CTX_set_default_passwd_cb (ctx, pem_passwd_cb);
-	
+
 	return ctx;
 }
 
 void initialize_ssl()
 {
-    SSL_load_error_strings();
-    SSL_library_init();
-    OpenSSL_add_all_algorithms();
+	SSL_load_error_strings();
+	SSL_library_init();
+	OpenSSL_add_all_algorithms();
 	ERR_load_BIO_strings();
 	ERR_load_crypto_strings();
 }
 
 void destroy_ssl()
 {
-    ERR_free_strings();
-    EVP_cleanup();
+	ERR_free_strings();
+	EVP_cleanup();
 }
 
 void shutdown_ssl(SSL *ssl)
 {
-    SSL_shutdown(ssl);
-    SSL_free(ssl);
+	SSL_shutdown(ssl);
+	SSL_free(ssl);
 }
+
