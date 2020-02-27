@@ -76,6 +76,7 @@ int main(int argc, char **argv)
 			ssl = SSL_new(ctx);
 			SSL_set_fd(ssl, s);
 			if (SSL_accept(ssl) < 1 || !is_client_cert_valid(ssl)){
+				printf("Main fail\n");
 				printf(FMT_ACCEPT_ERR);
 				ERR_print_errors_fp(stderr);
 				close(s);
@@ -116,6 +117,7 @@ bool is_client_cert_valid(SSL* ssl)
 	cert = SSL_get_peer_certificate(ssl); /* get the client's certificate */
 	if (cert == NULL || X509_V_OK != SSL_get_verify_result(ssl)){
 		printf(FMT_ACCEPT_ERR);
+		ERR_print_errors_fp(stdout);
 		return false;
 	}
 
