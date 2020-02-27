@@ -107,7 +107,7 @@ int main(int argc, char **argv)
 	return 1;
 }
 
-bool print_client_info(SSL* ssl)
+bool is_client_cert_valid(SSL* ssl)
 {
 	X509 *cert;
 	char common_name[256];
