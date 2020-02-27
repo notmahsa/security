@@ -179,9 +179,9 @@ int pem_passwd_cb(char *buf, int size, int rwflag, void *password)
 SSL_CTX *init_ctx(char* keyfile)
 {
 	SSL_CTX *ctx;
-	ctx = SSL_CTX_new(TLSv1_server_method());
-	ctx = ctx ? ctx : SSL_CTX_new(SSLv3_server_method());
-	ctx = ctx ? ctx : SSL_CTX_new(SSLv2_server_method()); 
+	ctx = SSL_CTX_new(TLSv23_server_method());
+	// ctx = ctx ? ctx : SSL_CTX_new(SSLv3_server_method());
+	// ctx = ctx ? ctx : SSL_CTX_new(SSLv2_server_method()); 
 
 	if (!ctx) {
 		printf(FMT_ACCEPT_ERR);
