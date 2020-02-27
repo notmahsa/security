@@ -76,16 +76,12 @@ int main(int argc, char **argv)
 			ssl = SSL_new(ctx);
 			SSL_set_fd(ssl, s);
 			if (SSL_accept(ssl) < 1){
-				printf("Main fail 1\n");
 				printf(FMT_ACCEPT_ERR);
 				ERR_print_errors_fp(stderr);
 				close(s);
 				exit(0);
 			}
 			if(!is_client_cert_valid(ssl)){
-				printf("Main fail 2\n");
-				printf(FMT_ACCEPT_ERR);
-				ERR_print_errors_fp(stderr);
 				close(s);
 				exit(0);
 			}
