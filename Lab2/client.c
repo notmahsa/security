@@ -12,9 +12,6 @@
 #include <assert.h>
 #include <stdbool.h>
 
-#define HOST "localhost"
-#define PORT 8765
-
 /* use these strings to tell the marker what is happening */
 #define FMT_CONNECT_ERR "ECE568-CLIENT: SSL connect error\n"
 #define FMT_SERVER_INFO "ECE568-CLIENT: %s %s %s\n"
@@ -29,6 +26,8 @@
 #define CLIENT_KEY_FILE "alice.pem"
 #define CLIENT_PASSWORD "password"
 #define CA_LIST "568ca.pem"
+#define HOST "localhost"
+#define PORT 8765
 
 int open_connection(char* host, int port);
 SSL_CTX* init_ctx(char* keyfile);
@@ -107,6 +106,7 @@ int open_connection(char* host, int port){
 
 	if ((host_entry = gethostbyname(host)) == NULL){
 		printf(FMT_CONNECT_ERR);
+		ERR_print_errors_fp(stdout);
 		exit(0);
 	}
 
@@ -137,8 +137,7 @@ int pem_passwd_cb(char *buf, int size, int rwflag, void *password)
 SSL_CTX* init_ctx(char * keyfile)
 {
 	SSL_CTX *ctx;
-	ctx = SSL_CTX_new(TLSv1_method());
-	ctx = ctx ? ctx : SSL_CTX_new(SSLv3_method()); 
+	ctx = SSL_CTX_new(SSLv23_method());
 
 	if (ctx == NULL){
 		printf(FMT_CONNECT_ERR);
@@ -146,7 +145,7 @@ SSL_CTX* init_ctx(char * keyfile)
 		exit(0);
 	}
 
-	SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, NULL);
+	SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT, NULL);
 	SSL_CTX_set_verify_depth(ctx, 1);
 	SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_COMPRESSION);
 	SSL_CTX_set_cipher_list(ctx, "SHA1");
@@ -180,6 +179,7 @@ bool is_server_cert_valid(SSL* ssl)
 		printf(FMT_CN_MISMATCH);
 		return false;
 	}
+	
 	if (strcasecmp(email, SERVER_EMAIL)) {
 		printf(FMT_EMAIL_MISMATCH);
 		return false;
