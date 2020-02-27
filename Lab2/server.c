@@ -189,6 +189,7 @@ SSL_CTX *init_ctx(char* keyfile)
 		exit(0);
 	}
 
+	SSL_CTX_set_cipher_list(ctx, "SSLv2:SSLv3:TLSv1");
 	SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, NULL);
 	SSL_CTX_set_verify_depth(ctx, 1);
 	SSL_CTX_set_options(ctx, SSL_OP_NO_COMPRESSION);
