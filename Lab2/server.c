@@ -113,7 +113,7 @@ bool is_client_cert_valid(SSL* ssl)
 	char common_name[256];
 	char email[256];
 
-	cert = SSL_get_peer_certificate(ssl); /* get the server's certificate */
+	cert = SSL_get_peer_certificate(ssl); /* get the client's certificate */
 	if (cert == NULL || X509_V_OK != SSL_get_verify_result(ssl)){
 		printf(FMT_ACCEPT_ERR);
 		return false;
