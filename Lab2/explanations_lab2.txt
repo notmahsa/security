@@ -17,3 +17,4 @@ certificate and key to create a context and extablished the
 ssl channel in a while(1) loop in order to constantly listen 
 for client messages in an encrypted manner. I then also used
 SSL_read and SSL_write to communicate securely.
+
