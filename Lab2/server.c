@@ -179,7 +179,7 @@ int pem_passwd_cb(char *buf, int size, int rwflag, void *password)
 SSL_CTX *init_ctx(char* keyfile)
 {
 	SSL_CTX *ctx;
-	ctx = SSL_CTX_new(SSLv2_method());
+	ctx = SSL_CTX_new(SSLv23_method());
 	// ctx = ctx ? ctx : SSL_CTX_new(SSLv3_server_method());
 	// ctx = ctx ? ctx : SSL_CTX_new(SSLv2_server_method()); 
 
