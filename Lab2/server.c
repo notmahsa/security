@@ -85,15 +85,15 @@ int main(int argc, char **argv)
 			char *answer = "42";
 
 			len = SSL_read(ssl, buf, sizeof(buf)/sizeof(char));
-			buf[len] = '\0';
-
 			if (len < 1){
 				printf(FMT_INCOMPLETE_CLOSE);
-				break;
 			}
-
-			printf(FMT_OUTPUT, buf, answer);
-			SSL_write(ssl, answer, strlen(answer));
+			else {
+				buf[len] = '\0';
+				printf(FMT_OUTPUT, buf, answer);
+				SSL_write(ssl, answer, strlen(answer));
+			}
+			
 			destroy_ssl();
 			shutdown_ssl(ssl);
 			close(sock);
