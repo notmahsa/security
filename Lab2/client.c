@@ -92,7 +92,7 @@ void send_message(SSL* ssl, const char *secret){
 		return;
 	}
  
-	len = SSL_read(ssl, buf, strlen(buf));
+	len = SSL_read(ssl, buf, sizeof(buf)/sizeof(char));
 	buf[len]='\0';
 	
 	/* this is how you output something for the marker to pick up */
