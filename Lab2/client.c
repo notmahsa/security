@@ -176,7 +176,6 @@ bool is_server_cert_valid(SSL* ssl)
 	X509_NAME_get_text_by_NID(X509_get_subject_name(cert), NID_pkcs9_emailAddress, email, 256);  
 	X509_NAME_get_text_by_NID(X509_get_issuer_name(cert), NID_commonName, issuer, 256);
 
-	printf("%s/n", email);
 	if (strcasecmp(common_name,SERVER_COMMON_NAME)){
 		printf(FMT_CN_MISMATCH);
 		return false;
