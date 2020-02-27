@@ -28,6 +28,7 @@ void destroy_ssl();
 void shutdown_ssl(SSL *ssl);
 SSL_CTX *init_ctx(char* keyfile);
 void shutdown_ssl(SSL *ssl);
+void print_client_info(SSL* ssl);
 
 int main(int argc, char **argv)
 {
@@ -87,13 +88,12 @@ int main(int argc, char **argv)
 			len = SSL_read(ssl, buf, sizeof(buf)/sizeof(char));
 			if (len < 1){
 				printf(FMT_INCOMPLETE_CLOSE);
+				break;
 			}
-			else {
-				buf[len] = '\0';
-				printf(FMT_OUTPUT, buf, answer);
-				SSL_write(ssl, answer, strlen(answer));
-			}
-			
+			buf[len] = '\0';
+			print_client_info(ssl);
+			printf(FMT_OUTPUT, buf, answer);
+			SSL_write(ssl, answer, strlen(answer));
 			destroy_ssl();
 			shutdown_ssl(ssl);
 			close(sock);
@@ -105,6 +105,24 @@ int main(int argc, char **argv)
 	close(sock);
 	destroy_ssl();
 	return 1;
+}
+
+void print_client_info(SSL* ssl)
+{
+	X509 *cert;
+	char common_name[256];
+	char email[256];
+
+	cert = SSL_get_peer_certificate(ssl); /* get the server's certificate */
+	if (cert == NULL || X509_V_OK != SSL_get_verify_result(ssl)){
+		printf(FMT_ACCEPT_ERR);
+		return;
+	}
+
+	X509_NAME_get_text_by_NID(X509_get_subject_name(cert), NID_commonName, common_name, 256);
+	X509_NAME_get_text_by_NID(X509_get_subject_name(cert), NID_pkcs9_emailAddress, email, 256);
+
+	printf(FMT_CLIENT_INFO, common_name, email);
 }
 
 int create_socket(int port){
