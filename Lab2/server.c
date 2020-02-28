@@ -79,6 +79,8 @@ bool run_loop_success(int port){
 			if(!ssl) {
 				printf(FMT_INCOMPLETE_CLOSE);
 				ERR_print_errors_fp(stderr);
+				shutdown_ssl(ssl);
+				close(s);
 				break;
 			}
 			
@@ -86,11 +88,13 @@ bool run_loop_success(int port){
 			if (SSL_accept(ssl) < 1){
 				printf(FMT_ACCEPT_ERR);
 				ERR_print_errors_fp(stderr);
+				shutdown_ssl(ssl);
 				close(s);
 				break;
 			}
 			
 			if(!is_client_cert_valid(ssl)){
+				shutdown_ssl(ssl);
 				close(s);
 				break;
 			}
@@ -102,6 +106,8 @@ bool run_loop_success(int port){
 			len = SSL_read(ssl, buf, sizeof(buf)/sizeof(char));
 			if (len < 1){
 				printf(FMT_INCOMPLETE_CLOSE);
+				shutdown_ssl(ssl);
+				close(s);
 				break;
 			}
 			
@@ -222,6 +228,7 @@ void destroy_ssl()
 
 void shutdown_ssl(SSL *ssl)
 {
-	SSL_shutdown(ssl);
+	int r = SSL_shutdown(ssl);
+	if (r < 0) printf(FMT_INCOMPLETE_CLOSE);
 	SSL_free(ssl);
 }

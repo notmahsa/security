@@ -67,6 +67,7 @@ int main(int argc, char **argv)
 	sock = open_connection(host, port);
 	ssl = SSL_new(ctx);
 	SSL_set_fd(ssl, sock);
+
 	if (SSL_connect(ssl) < 1){
 		printf(FMT_CONNECT_ERR);
 		ERR_print_errors_fp(stdout);
@@ -93,6 +94,11 @@ void send_message(SSL* ssl, const char *secret){
 
 	len = SSL_read(ssl, buf, sizeof(buf)/sizeof(char));
 	buf[len]='\0';
+	
+	if (SSL_get_error(ssl, len) ==  SSL_ERROR_SYSCALL) {
+		printf(FMT_INCORRECT_CLOSE);
+		return;
+	}
 
 	/* this is how you output something for the marker to pick up */
 	printf(FMT_OUTPUT, secret, buf);
@@ -145,7 +151,9 @@ SSL_CTX* init_ctx(char * keyfile)
 		exit(0);
 	}
 
-	SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT, NULL);
+	// Removing set_verify because of lab error message requirements.
+	// SSL_CTX_set_verify(ctx, SSL_VERIFY_FAIL_IF_NO_PEER_CERT, NULL);
+	
 	SSL_CTX_set_verify_depth(ctx, 1);
 	SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_COMPRESSION);
 	SSL_CTX_set_cipher_list(ctx, "SHA1");
@@ -164,6 +172,7 @@ bool is_server_cert_valid(SSL* ssl)
 	char common_name[256];
 	char email[256];
 	char issuer[256];
+	bool name_or_email_wrong = false;
 
 	cert = SSL_get_peer_certificate(ssl); /* get the server's certificate */
 	if (cert == NULL || X509_V_OK != SSL_get_verify_result(ssl)){
@@ -177,13 +186,15 @@ bool is_server_cert_valid(SSL* ssl)
 
 	if (strcasecmp(common_name,SERVER_COMMON_NAME)){
 		printf(FMT_CN_MISMATCH);
-		return false;
+		name_or_email_wrong = true;
 	}
 	
 	if (strcasecmp(email, SERVER_EMAIL)) {
 		printf(FMT_EMAIL_MISMATCH);
-		return false;
+		name_or_email_wrong = true;
 	}
+	
+	if (name_or_email_wrong) return false;
 
 	printf(FMT_SERVER_INFO, common_name, email, issuer);
 	return true;
