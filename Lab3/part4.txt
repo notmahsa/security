@@ -1,0 +1,7 @@
+<iframe id="if1" src="attack?Screen=2014084448&menu=900&transfer=5000" onload="populate()"></iframe>
+<iframe id="if2"></iframe>
+<script>
+	function populate() {
+	document.getElementById("if2").src="attack?Screen=2014084448&menu=900&transfer=CONFIRMED";
+}
+</script>
