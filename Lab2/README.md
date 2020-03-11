@@ -1,6 +1,4 @@
-#Mahsa Naserifar, 1002330872, mahsa.naserifar@mail.utoronto.ca
-
-Client:
+## Client:
 The client was sending the message to the server through 
 a non-encrypted socket, using simple send/recv commands.
 I used the openssl library to first create a context using
@@ -9,7 +7,7 @@ the server's certificate through the 568ca.pem file for CA.
 Then I used the SSL_read and SSL_write to communicate in an
 encrypted manner. 
 
-Server:
+## Server:
 The server was also using send/recv to communicate with 
 clients through a non-encrypted socket. I replaced that
 with an ssl channel established through using the server's
