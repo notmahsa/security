@@ -1,3 +1,2 @@
-101; UPDATE employee SET salary='555000' WHERE userid=101;
-
+101; UPDATE employee SET salary='555000' WHERE userid=101; --
 101; CREATE TRIGGER myTrigger BEFORE INSERT ON employee FOR EACH ROW BEGIN UPDATE employee SET email="ece568-2020@utoronto.ca" WHERE userid=NEW.userid; --
