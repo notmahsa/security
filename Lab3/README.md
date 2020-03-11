@@ -1,5 +1,3 @@
-#Mahsa Naserifar, 1002330872, mahsa.naserifar@mail.utoronto.ca
-
 ## Part 1:
 In this part I created a simple HTML form that accepts the user's username and password. We are assuming here that the 
 user trusts this form and enters the credentials. This works because with the information from user and cross-site 
