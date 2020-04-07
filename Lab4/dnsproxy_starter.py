@@ -45,14 +45,16 @@ if __name__ == '__main__':
 	SPOOF = args.spoof_response
 	# IP of localhost
 	localhost = "127.0.0.1"
+	# setup a UDP server to get the UDP DNS request
+	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	sock.bind((localhost, port))
+	sock.listen(1)
+	print("Listening on port %s" % port)
 	try:
-		# setup a UDP server to get the UDP DNS request
-		sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		sock.bind((localhost, port))
-		print("Listening on port %s" % port)
 		while True:
-			data, addr = sock.recvfrom(1024)
-			if data:
+			conn, addr = sock.accept()
+			if conn:
+				data = conn.recv(1024)
 				print("Got data! %s" % data)
 				handle_request(data, addr, sock, localhost, dns_port)
 	except:
