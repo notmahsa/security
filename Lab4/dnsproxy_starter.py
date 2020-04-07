@@ -45,7 +45,7 @@ def handler(data, addr, socket, dns_ip):
             original_dns_packet = IP(server_response[2:])/UDP(server_response[2:])/DNS(server_response[2:])
             print "ORIGINAL OBJECT\n", original_dns_packet.show()
             # dns_packet = IP(dst=server_response[IP].dst, src=server_response[IP].src) / UDP(server_response[2:]) / DNS(server_response[2:])
-            print "QUERIED URL", original_dns_packet[DNS].dq.qname
+            # print "QUERIED URL", original_dns_packet[DNS].dq.qname
             proxy_response = server_response[2:]
             print "Sending DNS response to client"
             socket.sendto(proxy_response, addr)
