@@ -18,6 +18,10 @@ dns_port = args.dns_port
 SPOOF = args.spoof_response
 # IP of localhost
 localhost = "127.0.0.1"
+too_be_spoofed = {'example.com': {
+	'ipv4': '1.2.3.4',
+	'ns': 'ns.dnslabattacker.net'
+}}
 
 def send_to_server(dns_ip, query):
     server = (dns_ip, dns_port)
@@ -38,9 +42,11 @@ def handler(data, addr, socket, dns_ip):
         if (int(rcode, 16) == 1):
             print "Format Error: Request is not a DNS query"
         else:
-            dns_packet = IP(server_response[2:])/ UDP(server_response[2:])/DNS(server_response[2:])
+			print server_response[DNS].qd.qname
+            dns_packet = IP(dst=server_response[IP].dst, src=server_response[IP].src) /\
+					UDP(server_response[2:]) /\
+					DNS(server_response[2:])
             print "SCAPY OBJECT", dns_packet.show()
-            print dns_packet[DNSRR]
             proxy_response = server_response[2:]
             print "Sending DNS response to client"
             socket.sendto(proxy_response, addr)
