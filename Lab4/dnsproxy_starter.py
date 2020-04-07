@@ -49,6 +49,7 @@ if __name__ == '__main__':
 		# setup a UDP server to get the UDP DNS request
 		sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		sock.bind((localhost, port))
+		print("Listening on port %s" % port)
 		while True:
 			data, addr = sock.recvfrom(1024)
 			if data:
