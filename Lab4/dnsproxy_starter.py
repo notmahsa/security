@@ -31,29 +31,28 @@ def send_to_server(dns_ip, query):
 
 # a new thread to handle the UPD DNS request to TCP DNS request
 def handler(data, addr, socket, dns_ip):
-    print "Request from client: ", data.encode("hex"), addr
+    print "Received request from client"
     server_response = send_to_server(dns_ip, data)
-    print "TCP Answer from server: ", server_response.encode("hex")
+    print "Received response from DNS server"
     if server_response:
         rcode = server_response[:6].encode("hex")
         rcode = str(rcode)[11:]
-        print "RCODE: ", rcode
         if (int(rcode, 16) == 1):
-            print "Request is not a DNS query. Format Error!"
+            print "Format Error: Request is not a DNS query"
         else:
             print "Success!"
             proxy_response = server_response[2:]
-            print "UDP Answer: ", proxy_response.encode("hex")
+            print "Sent DNS response to client"
             socket.sendto(proxy_response, addr)
     else:
-        print "Request is not a DNS query. Format Error!"
+        print "Format Error: Request is not a DNS query"
 
 if __name__ == '__main__':
     dns_ip = localhost
     port = port
     host = localhost
     try:
-        # setup a UDP server to get the UDP DNS request
+        # setup a UDP proxy server to get the UDP DNS request from client and send to DNS server
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.bind((host, port))
         while True:
