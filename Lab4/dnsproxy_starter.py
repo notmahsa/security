@@ -42,9 +42,10 @@ def handler(data, addr, socket, dns_ip):
         if (int(rcode, 16) == 1):
             print "Format Error: Request is not a DNS query"
         else:
-            print server_response[DNS].qd.qname
-            dns_packet = IP(dst=server_response[IP].dst, src=server_response[IP].src) / UDP(server_response[2:]) / DNS(server_response[2:])
-            print "SCAPY OBJECT", dns_packet.show()
+            original_dns_packet = DNS(server_response)
+            print "ORIGINAL OBJECT", original_dns_packet.show()
+            # dns_packet = IP(dst=server_response[IP].dst, src=server_response[IP].src) / UDP(server_response[2:]) / DNS(server_response[2:])
+            print "QUERIED URL", original_dns_packet[DNS].qd.dname
             proxy_response = server_response[2:]
             print "Sending DNS response to client"
             socket.sendto(proxy_response, addr)
