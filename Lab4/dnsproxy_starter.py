@@ -2,7 +2,7 @@ import argparse
 import socket
 from scapy.all import *
 """
-REFERENCES: SIMPLE TCP PROXY SERVER IN PYTHON https://github.com/tigerlyb/DNS-Proxy-Server-in-Python/blob/master/DNSProxyServer.py
+REFERENCES: TCP PROXY SERVER IN PYTHON https://github.com/tigerlyb/DNS-Proxy-Server-in-Python/blob/master/DNSProxyServer.py
 """
 
 parser = argparse.ArgumentParser()
@@ -19,7 +19,6 @@ SPOOF = args.spoof_response
 # IP of localhost
 localhost = "127.0.0.1"
 
-# send a TCP DNS query to the upstream DNS server
 def send_to_server(dns_ip, query):
     server = (dns_ip, dns_port)
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -29,7 +28,6 @@ def send_to_server(dns_ip, query):
     data = sock.recv(1024)
     return data
 
-# a new thread to handle the UPD DNS request to TCP DNS request
 def handler(data, addr, socket, dns_ip):
     print "Received request from client"
     server_response = send_to_server(dns_ip, data)
@@ -52,7 +50,7 @@ if __name__ == '__main__':
     port = port
     host = localhost
     try:
-        # setup a UDP proxy server to get the UDP DNS request from client and send to DNS server
+        # setup UDP proxy server to get DNS request from client, send to DNS server
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.bind((host, port))
         while True:
