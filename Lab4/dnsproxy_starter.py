@@ -58,7 +58,7 @@ def handler(data, addr, socket, dns_ip):
                 del original_dns_packet[UDP].len
                 del original_dns_packet[UDP].chksum
                 print "Spoofed packet", original_dns_packet.summary()
-                proxy_response = str(original_dns_packet)
+                proxy_response = str(original_dns_packet)[2:]
             else:
                 print "Request for %s will NOT be spoofed" % url[:-1]
                 proxy_response = server_response[2:]
