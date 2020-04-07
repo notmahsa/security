@@ -54,7 +54,7 @@ def handler(data, addr, socket, dns_ip):
                 print "Spoofed packet", spoofed_dns_packet.show()
                 proxy_response = str(spoofed_dns_packet)
             else:
-                "Request for %s will NOT be spoofed" % url[:-2]
+                print "Request for %s will NOT be spoofed" % url[:-2]
                 proxy_response = server_response[2:]
             print "Sending DNS response to client"
             socket.sendto(proxy_response, addr)
