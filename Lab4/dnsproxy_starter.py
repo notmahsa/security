@@ -22,14 +22,14 @@ def handle_request(data, addr, sock, dns_ip, dns_port):
         rcode = server_response[:6].encode("hex")
         rcode = str(rcode)[11:]
         if (int(rcode, 16) == 1):
-            print "Request is not a DNS query. Format Error!"
+            print("Request is not a DNS query. Format Error!")
         else:
-            print "Success!"
+            print("Success!")
             proxy_response = server_response[2:]
             # print "Response: ", proxy_response.encode("hex")
             socket.sendto(proxy_response, addr)
     else:
-        print "Request is not a DNS query. Format Error!"
+        print("Request is not a DNS query. Format Error!")
 		
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
@@ -51,8 +51,10 @@ if __name__ == '__main__':
 		sock.bind((localhost, port))
 		while True:
 			data, addr = sock.recvfrom(1024)
-			handle_request(data, addr, sock, localhost, dns_port)
-	except Exception, e:
-		print e
+			if data:
+				print("Got data! %s" % data)
+				handle_request(data, addr, sock, localhost, dns_port)
+	except:
+		print("Failed")
 		sock.close()
 		
