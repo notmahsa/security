@@ -43,7 +43,7 @@ def handler(data, addr, socket, dns_ip):
         else:
             print "Success!"
             proxy_response = server_response[2:]
-            print "UDP Answer: ", UDPanswer.encode("hex")
+            print "UDP Answer: ", proxy_response.encode("hex")
             socket.sendto(proxy_response, addr)
     else:
         print "Request is not a DNS query. Format Error!"
