@@ -61,7 +61,7 @@ def handler(data, addr, socket, dns_ip):
                 proxy_response = server_response[2:]
             print "Sending DNS response to client"
             print type(proxy_response), len(proxy_response)
-            socket.sendto(proxy_response, addr)
+            socket.send(proxy_response)
             print "Success!"
     else:
         print "Format Error: Request is not a DNS query"
