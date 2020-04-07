@@ -46,10 +46,6 @@ def handler(data, addr, socket, dns_ip):
             url = original_dns_packet[DNS].qd.qname
             if url in to_be_spoofed:
                 print "Request for %s will be spoofed" % url[:-1]
-                del original_dns_packet[IP].len
-                del original_dns_packet[IP].chksum
-                del original_dns_packet[UDP].len
-                del original_dns_packet[UDP].chksum
                 original_dns_packet[DNS].an = DNSRR(rrname=url, rdata=to_be_spoofed[url]['ipv4'])
                 original_dns_packet[DNS].ancount = 1
                 original_dns_packet[DNS].ar = NotImplemented
