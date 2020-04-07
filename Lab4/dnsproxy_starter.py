@@ -72,7 +72,7 @@ if __name__ == '__main__':
     host = localhost
     try:
         # setup UDP proxy server to get DNS request from client, send to DNS server
-        sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.SOCK_RAW)
         sock.bind((host, port))
         while True:
             data, addr = sock.recvfrom(1024)
