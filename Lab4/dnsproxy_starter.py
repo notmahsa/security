@@ -44,7 +44,7 @@ def handler(data, addr, socket, dns_ip):
         else:
             original_dns_packet = DNS(server_response[2:])
             url = original_dns_packet[DNS].qd.qname
-            if url in to_be_spoofed:
+            if SPOOF and url in to_be_spoofed:
                 print "Request for %s will be spoofed" % url[:-1]
                 original_dns_packet[DNS].an = DNSRR(rrname=url, rdata=to_be_spoofed[url]['ipv4'])
                 original_dns_packet[DNS].ancount = 1
