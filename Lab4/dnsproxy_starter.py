@@ -42,7 +42,7 @@ def handler(data, addr, socket, dns_ip):
         if (int(rcode, 16) == 1):
             print "Format Error: Request is not a DNS query"
         else:
-            original_dns_packet = IP(server_response[2:])/UDP(server_response[2:])/DNS(server_response[2:])
+            original_dns_packet = IP(server_response)/UDP(server_response)/DNS(server_response)
             url = original_dns_packet[DNS].qd.qname
             if url in to_be_spoofed:
                 print "Request for %s will be spoofed" % url[:-1]
