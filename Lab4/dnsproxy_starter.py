@@ -85,38 +85,40 @@ SPOOF = args.spoof_response
 localhost = "127.0.0.1"
 
 # convert the UDP DNS query to the TCP DNS query
-def get_tcp_query(query):
+def getTcpQuery(query):
     message = "\x00"+ chr(len(query)) + query
     return message
 
 # send a TCP DNS query to the upstream DNS server
-def send_to_server(dns_ip, query):
-    server = (dns_ip, dns_port)
-    server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_sock.connect(server)
-    tcp_query = get_tcp_query(query)
-    server_sock.send(tcp_query)  	
-    data = server_sock.recv(1024)
+def sendTCP(DNSserverIP, query):
+    server = (DNSserverIP, dns_port)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect(server)
+    tcp_query = getTcpQuery(query)
+    sock.send(tcp_query)  	
+    data = sock.recv(1024)
     return data
 
 # a new thread to handle the UPD DNS request to TCP DNS request
-def handler(data, addr, socket, dns_ip):
-    print ("Request from client: ", data.encode("hex"), addr)
-    server_response = send_to_server(dns_ip, data)
-    print ("TCP Answer from server: ", server_response.encode("hex"))
-    if server_response:
-        rcode = server_response[:6].encode("hex")
+def handler(data, addr, socket, DNSserverIP):
+    #print "Request from client: ", data.encode("hex"), addr
+    #print ""
+    TCPanswer = sendTCP(DNSserverIP, data)
+    #print "TCP Answer from server: ", TCPanswer.encode("hex")
+    #print ""
+    if TCPanswer:
+        rcode = TCPanswer[:6].encode("hex")
         rcode = str(rcode)[11:]
-        print ("RCODE: ", rcode)
+        #print "RCODE: ", rcode
         if (int(rcode, 16) == 1):
-            print ("Format Error: Request is not a DNS query")
+            print "Request is not a DNS query. Format Error!"
         else:
-            print ("Success!")
-            proxy_response = server_response[2:]
-            print ("Proxy Answer: ", proxy_response.encode("hex"))
-            socket.sendto(proxy_response, addr)
+            print "Success!"
+            UDPanswer = TCPanswer[2:]
+            #print "UDP Answer: ", UDPanswer.encode("hex")
+            socket.sendto(UDPanswer, addr)
     else:
-        print ("Format Error: Request is not a DNS query")
+        print "Request is not a DNS query. Format Error!"
 
 if __name__ == '__main__':
     DNSserverIP = localhost
