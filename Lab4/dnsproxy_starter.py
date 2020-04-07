@@ -61,7 +61,7 @@ def handler(data, addr, socket, dns_ip):
                 proxy_response = server_response[2:]
             print "Sending DNS response to client"
             print type(proxy_response), len(proxy_response)
-            socket.send(proxy_response)
+            socket.sendto(proxy_response, addr)
             print "Success!"
     else:
         print "Format Error: Request is not a DNS query"
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     host = localhost
     try:
         # setup UDP proxy server to get DNS request from client, send to DNS server
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
         sock.bind((host, port))
         while True:
             data, addr = sock.recvfrom(1024)
