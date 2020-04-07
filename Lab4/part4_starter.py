@@ -51,24 +51,9 @@ def exampleSendDNSQuery():
     sendPacket(sock, dnsPacket, my_ip, my_port)
     response = sock.recv(4096)
     response = DNS(response)
-    response[DNS].ns = DNSRR(rrname=response[DNS].qd.qname, type='NS', ttl=84107, rdata='ns.dnslabattacker.net')
-    response[DNS].nscount = 1
-    response[DNS].ar = NotImplemented
-    response[DNS].arcount = 0
     print "\n***** Packet Received from Remote Server *****"
     print response.show()
     print "***** End of Remote Server Packet *****\n"
 
 if __name__ == '__main__':
-    # exampleSendDNSQuery()
-    host = "127.0.0.1"
-    try:
-        # setup UDP proxy server to get DNS request from client, send to DNS server
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-        sock.bind((host, my_port))
-        while True:
-            data, addr = sock.recvfrom(1024)
-            print data
-            # handler(data, addr, sock, dns_ip)
-    except Exception, e:
-        print e
+    exampleSendDNSQuery()
