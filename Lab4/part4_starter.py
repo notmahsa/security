@@ -47,7 +47,6 @@ Example code that sends a DNS query using scapy.
 '''
 def exampleSendDNSQuery():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    sock.bind((my_ip, my_port))
     dnsPacket = DNS(rd=1, qd=DNSQR(qname='example.com'))
     sendPacket(sock, dnsPacket, my_ip, dns_port)
     response = sock.recv(4096)
