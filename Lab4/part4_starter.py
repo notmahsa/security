@@ -60,4 +60,15 @@ def exampleSendDNSQuery():
     print "***** End of Remote Server Packet *****\n"
 
 if __name__ == '__main__':
-    exampleSendDNSQuery()
+    # exampleSendDNSQuery()
+    host = "127.0.0.1"
+    try:
+        # setup UDP proxy server to get DNS request from client, send to DNS server
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        sock.bind((host, my_port))
+        while True:
+            data, addr = sock.recvfrom(1024)
+            print data
+            # handler(data, addr, sock, dns_ip)
+    except Exception, e:
+        print e
