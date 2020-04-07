@@ -53,10 +53,12 @@ if __name__ == '__main__':
 	try:
 		while True:
 			conn, addr = sock.accept()
-			if conn:
+			try:
 				data = conn.recv(1024)
 				print("Got data! %s" % data)
 				handle_request(data, addr, sock, localhost, dns_port)
+			except:
+            	conn.close()
 	except:
 		print("Failed")
 		sock.close()
