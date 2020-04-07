@@ -56,10 +56,11 @@ def handler(data, addr, socket, dns_ip):
             else:
                 print "Request for %s will NOT be spoofed" % url[:-1]
                 proxy_response = server_response[2:]
-            print "Sending DNS response to client\n", DNS(proxy_response).show()
+            print "Sending DNS response to client"
+            # print DNS(proxy_response).show()
             ret = socket.sendto(proxy_response, addr)
             if ret:
-                print "Success! Returned %d bytes", ret
+                print "Success! Returned %d bytes" % ret
     else:
         print "Format Error: Request is not a DNS query"
 
