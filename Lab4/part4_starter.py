@@ -88,7 +88,7 @@ def attack():
             print fake_response[DNS].id
 
         # check to see if it worked
-        sendPacket(sock, dns_request, my_ip, dns_port)
+        # sendPacket(sock, dns_request, my_ip, dns_port)
         response = sock.recv(4096)
         response = DNS(response)
         try:
