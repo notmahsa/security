@@ -102,7 +102,6 @@ def attack():
                 print "Cache poisoning on %s failed" % url
         except:
             print "Cache poisoning on %s failed" % url
-    
 
 if __name__ == '__main__':
     attack()
