@@ -98,7 +98,7 @@ def attack():
                 print "Successfully poisonned our target with a dummy record!"
                 break
             else:
-                print "Poisonning on %s failed, ns is %s" % (url, str(response[DNS].ns))
+                print "Poisonning on %s failed" % (url)
         except:
             print "Poisonning on %s failed" % (url)
     
