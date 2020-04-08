@@ -96,8 +96,7 @@ def attack():
                 print "Poisonning on %s failed, ns is %s" % (url, res[DNS].ns[0].rdata)
                 print res.show()
         except:
-            print "Poisonning on %s failed, response is %s" % (url, data)
-            print res.show()
+            print "Poisonning on %s failed, response is \n%s" % (url, data)
     
 
 if __name__ == '__main__':
