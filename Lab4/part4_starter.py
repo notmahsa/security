@@ -102,7 +102,7 @@ def attack():
             else:
                 print "Poisonning on %s failed, ns is %s" % (url, str(response[DNS].ns))
         except:
-            print "Poisonning on %s failed, response is \n%s" % (url, response.show())
+            print "Poisonning on %s failed, response is \n%s" % (url)
     
 
 if __name__ == '__main__':
