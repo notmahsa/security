@@ -96,12 +96,12 @@ def attack():
         response = DNS(response)
         try:
             if response[DNS].ns[0].rdata == spoof:
-                print "Successfully poisonned %s NS with a dummy record!" % base_domain[:-1]
+                print "Successfully poisoned cache on %s NS" % base_domain[:-1]
                 break
             else:
-                print "Poisonning on %s failed" % url
+                print "Cache poisoning on %s failed" % url
         except:
-            print "Poisonning on %s failed" % url
+            print "Cache poisoning on %s failed" % url
     
 
 if __name__ == '__main__':
