@@ -92,7 +92,7 @@ def attack():
         dns_request[DNS].qd.qname = base_domain
         sendPacket(sock, dns_request, my_ip, dns_port)
         response = sock.recv(4096)
-        print response
+        print "LOL", response
         response = DNS(response[2:])
         try:
             if response[DNS].ns.rdata == spoof:
