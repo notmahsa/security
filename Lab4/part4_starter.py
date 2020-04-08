@@ -24,7 +24,7 @@ dns_port = args.dns_port
 # port that your bind uses to send its DNS queries
 query_port = args.query_port
 base_domain = 'example.com.'
-spoof = 'ns.dnslabattacker.net.'
+spoof = 'ns.bankofsteve.com'
 
 
 '''
